@@ -34,7 +34,10 @@ export default function Router() {
     },
     {
       path: '',
-      element: <Navigate to="/dashboard" replace />
+      children: [
+        { path: '', element: <Navigate to="/dashboard" replace /> },
+        { path: '/404', element: <NotFound /> }
+      ]
     },
     {
       path: '*',
