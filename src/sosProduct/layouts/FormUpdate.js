@@ -1,12 +1,7 @@
-import * as Yup from 'yup';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// form
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
-import { Link, Stack, IconButton, InputAdornment } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import Axios from "axios";
+
 // components
 import Button from 'react-bootstrap/Button';
 import {
@@ -18,95 +13,202 @@ import {
   MDBCardBody,
   MDBInput,
   MDBCheckbox,
-  MDBIcon
+  MDBIcon,
+  MDBRadio
 }
   from 'mdb-react-ui-kit';
 import Form from 'react-bootstrap/Form';
 
 // ----------------------------------------------------------------------
 
-export default function FromUpdate() {
+function FromUpdate() {
+
+  const [nameProduct, setNameProduct] = useState("");
+  const [description, setDescription] = useState("");
+  const [productGender, setProductGender] = useState("");
+  const [productCategory, setProductCategory] = useState("");
+  const [idBrand, setIdBrand] = useState("");
+  const [idCategory, setIdCategory] = useState("");
+  const [nameBrand, setNameBrand] = useState("");
+  const [ImportPrice, setImportPrice] = useState("");
+  const [originalPrice, setOriginalPrice] = useState("");
+  const [sellPrice, setSellPrice] = useState("");
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false);
 
-  const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required'),
-  });
+// call api brand
+const [brands, setBrands] = useState([]);
+const fetchBrand = async () => {
+  const { data } = await Axios.get(
+    "http://localhost:8080/api/v1/brands"
+  );
 
-  const defaultValues = {
-    email: '',
-    password: '',
-    remember: true,
+  const brands = data;
+  setBrands(brands);
+  console.log(brands);
+};
+
+useEffect(() => {
+  fetchBrand();
+}, []);
+
+const handleChangeBrand = event => {
+  console.log(event.target.value);
+  setIdBrand(event.target.value)
+  console.log("idBrand");
+  console.log(idBrand);
+};
+
+// call api category
+const [categorys, setCategorys] = useState([]);
+const fetchCategory = async () => {
+  const { data } = await Axios.get(
+    "http://localhost:8080/api/v1/categorys"
+  );
+
+  const categorys = data;
+  setCategorys(categorys);
+  console.log(categorys);
+};
+
+useEffect(() => {
+  fetchCategory();
+}, []);
+
+const handleChangeCategory = event => {
+  console.log(event.target.value);
+
+};
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:8080/content/v1/products/save", {
+        method: "POST",
+        headers: {
+          Prefer: 'params=single-object',
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'charset': 'UTF-8'
+        },
+        body: JSON.stringify({
+          "name": nameProduct,
+          "productGender": productGender,
+          "brand": {
+            "id": idBrand
+          },
+          "category": {
+            "id": idCategory
+          },
+          "productImage": {
+            "id": 1,
+            "image": "https://bizweb.dktcdn.net/thumb/1024x1024/100/413/756/products/dq2514-100-01-1661750899934.png?v=1661750906003"
+          },
+          "productDetails": [],
+          "sellPrice": sellPrice,
+          "originalPrice": originalPrice,
+          "importPrice": ImportPrice,
+          "description": description,
+          "createDate": null,
+          "updateDate": null
+
+        }
+        ),
+      });
+      const resJson = await res.json();
+      if (res.status === 200) {
+        setMessage("User created successfully");
+      } else {
+        setMessage("Some error occured");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
-
-  const methods = useForm({
-    resolver: yupResolver(LoginSchema),
-    defaultValues,
-  });
-
-  const {
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
-
-  const onSubmit = async () => {
-    navigate('/dashboard', { replace: true });
-  };
-
   return (
-    <Form>
+
+    <Form onSubmit={handleSubmit}>
       <MDBRow>
         <MDBCol col='6'>
-          <MDBInput wrapperClass='mb-4' label='Name' id='form1' type='text' />
+          <MDBInput
+            wrapperClass='mb-4'
+            label='Name'
+            value={nameProduct}
+            onChange={(e) => setNameProduct(e.target.value)}
+            id='form1'
+            type='text' />
         </MDBCol>
 
         <MDBCol col='6'>
-          <MDBInput wrapperClass='mb-4' label='Brand' id='form1' type='' />
+          <MDBInput
+            wrapperClass='mb-4'
+            label='Original Price'
+            value={originalPrice}
+            id='form1' type='text' />
         </MDBCol>
       </MDBRow>
       <MDBRow>
         <MDBCol col='6'>
-          <MDBInput wrapperClass='mb-4' label='Category' id='form1' type='text' />
+          Brand
+          <select onChange={handleChangeBrand} name="fruits" id="fruit-select">
+            {brands.map((option, index) => (
+              <option key={index} onChange={(e) =>  setIdBrand(e.target.value)} value={option.id}>
+                {option.name}
+              </option>
+            ))}
+          </select>
         </MDBCol>
 
         <MDBCol col='6'>
-          <MDBInput wrapperClass='mb-4' label='Image' id='form1' type='file' />
-        </MDBCol>
-      </MDBRow>
-
-      <MDBRow>
-        <MDBCol col='6'>
-          <MDBInput wrapperClass='mb-4' label='Sell Price' id='form1' type='text' />
-        </MDBCol>
-
-        <MDBCol col='6'>
-          <MDBInput wrapperClass='mb-4' label='Original Price' id='form1' type='text' />
-        </MDBCol>
-      </MDBRow>
-      <MDBRow>
-        <MDBCol col='6'>
-          <MDBInput wrapperClass='mb-4' label='First name' id='form1' type='text' />
-        </MDBCol>
-
-        <MDBCol col='6'>
-          <MDBInput wrapperClass='mb-4' label='Import Price' id='form1' type='text' />
+          category
+          <select onChange={handleChangeCategory} name="fruits" id="fruit-select">
+            {categorys.map((option, index) => (
+              <option key={index} onChange={(e) => setIdCategory(e.target.value)} value={option.id}>
+                {option.name}
+              </option>
+            ))}
+          </select>
         </MDBCol>
       </MDBRow>
       <MDBRow>
-        <MDBCol col='9'>
-          <MDBInput wrapperClass='mb-4' label='Description' id='form1' type='text' />
+        <MDBCol col='6'>
+          <MDBInput wrapperClass='mb-4'
+            label='Sell Price'
+            value={sellPrice}
+            id='form1' type='text' />
+        </MDBCol>
+
+        <MDBCol col='6'>
+          <MDBInput
+            wrapperClass='mb-4'
+            label='Import Price'
+            value={ImportPrice}
+            id='form1'
+            type='text' />
         </MDBCol>
       </MDBRow>
-      <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Label>Gender</Form.Label>
-        <Form.Check type="checkbox" label="Male" />
-        <Form.Check type="checkbox" label="Female" />
-      </Form.Group>
+      <MDBRow>
+        <MDBCol col='6'>
+          <MDBInput
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            wrapperClass='mb-4' label='Description' id='form1' type='text' />
+        </MDBCol>
+      </MDBRow>
+      <MDBRow>
+
+        <div>
+          <MDBRadio name='flexRadioDefault' onChange={(e) => setProductGender(e.target.value)} value={'MEN'} id='flexRadioDefault1' label='Male' />
+          <MDBRadio name='flexRadioDefault' onChange={(e) => setProductGender(e.target.value)} value={'UNISEX'} id='flexRadioDefault1' label='Unisex' />
+          <MDBRadio name='flexRadioDefault' onChange={(e) => setProductGender(e.target.value)} value={'WOMAN'} id='flexRadioDefault2' label='Woman' defaultChecked />
+        </div>
+      </MDBRow>
       <Button variant="primary" type="submit">
         Submit
       </Button>
     </Form>
   );
 }
+
+export default FromUpdate;

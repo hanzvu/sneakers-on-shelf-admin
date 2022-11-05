@@ -6,12 +6,12 @@ import Blog from './pages/Blog';
 import User from './pages/User';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
-import ProductManager from './pages/ProductManager';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import ProductCreate from './sosProduct/layouts/FormCreate';
 import ProductUpdate from './sosProduct/layouts/FormUpdate';
 import DashboardApp from './pages/DashboardApp';
+import ProductManager from './sosProduct/layouts/ProductManager';
 
 // ----------------------------------------------------------------------
 
