@@ -8,7 +8,7 @@ import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText, Button } from '
 
 import Modal from 'react-bootstrap/Modal';
 import Iconify from '../../../components/Iconify';
-import FromCreate from '../../../sosProduct/layouts/FormUpdate';
+import FromCreate from '../../../sos/sosProduct/layouts/FormUpdate';
 // ----------------------------------------------------------------------
 
 export default function ProductMoreMenu() {

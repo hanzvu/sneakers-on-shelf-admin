@@ -8,10 +8,10 @@ import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
-import ProductCreate from './sosProduct/layouts/FormCreate';
-import ProductUpdate from './sosProduct/layouts/FormUpdate';
+import ProductCreate from './sos/sosProduct/layouts/FormCreate';
+import ProductUpdate from './sos/sosProduct/layouts/FormUpdate';
 import DashboardApp from './pages/DashboardApp';
-import ProductManager from './sosProduct/layouts/ProductManager';
+import ProductManager from './sos/sosProduct/layouts/ProductManager';
 
 // ----------------------------------------------------------------------
 
