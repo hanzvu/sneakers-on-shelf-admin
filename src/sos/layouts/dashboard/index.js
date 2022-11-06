@@ -5,8 +5,8 @@ import { styled } from '@mui/material/styles';
 //
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
-import { addAuthenticationInterceptor } from '../../sos/services/AuthenticationService';
-import { fetchAccount } from '../../sos/services/AccountService';
+import { addAuthenticationInterceptor } from '../../services/AuthenticationService';
+import { fetchAccount } from '../../services/AccountService';
 
 // ----------------------------------------------------------------------
 
