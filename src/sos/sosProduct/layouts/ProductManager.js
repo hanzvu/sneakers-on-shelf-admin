@@ -232,7 +232,7 @@ function ProductManager() {
     console.log("doubleclick: ")
     setProDetai(item)
     const  {data} = await Axios.get(
-        `http://localhost:8080/api/v1/productDetails/${item.id}`
+        `http://localhost:8080/admin/v1/productDetails/${item.id}`
     );
     const products = data;
     console.log("data: ")

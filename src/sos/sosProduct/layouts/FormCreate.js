@@ -47,7 +47,7 @@ function FromCreate() {
 const [brands, setBrands] = useState([]);
 const fetchBrand = async () => {
   const { data } = await Axios.get(
-    "http://localhost:8080/api/v1/brands"
+    "http://localhost:8080/admin/v1/brands"
   );
 
   const brands = data;
@@ -64,7 +64,7 @@ useEffect(() => {
 const [categorys, setCategorys] = useState([]);
 const fetchCategory = async () => {
   const { data } = await Axios.get(
-    "http://localhost:8080/api/v1/categories"
+    "http://localhost:8080/admin/v1/categories"
   );
 
   const categorys = data;
