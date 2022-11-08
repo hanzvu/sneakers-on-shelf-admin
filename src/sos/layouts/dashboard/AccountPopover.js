@@ -76,7 +76,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.picture} alt="photoURL" />
+        <Avatar src={account.picture} alt="photoURL" referrerPolicy="no-referrer" />
       </IconButton>
 
       <MenuPopover

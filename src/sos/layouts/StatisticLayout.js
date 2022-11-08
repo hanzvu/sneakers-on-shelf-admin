@@ -5,8 +5,6 @@ export default function StatisticLayout() {
 
     return (<>
         <OrderStatistic />
-        <OrderChart title="Website Visits"
-            subheader="(+43%) than last year"
-        />
+        <OrderChart title="Đơn Hàng Trong Tháng" />
     </>)
 }

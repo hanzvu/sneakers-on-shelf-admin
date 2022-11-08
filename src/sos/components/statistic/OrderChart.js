@@ -9,7 +9,7 @@ import { getOrderChartStatisticData } from '../../services/StatisticService';
 
 export default function OrderChart({ title, subheader, ...other }) {
 
-    const [chartData, setChartData] = useState();
+    const [chartData, setChartData] = useState(() => ({ series: [], labels: [] }));
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,10 +47,6 @@ export default function OrderChart({ title, subheader, ...other }) {
 
         fetchData();
     }, []);
-
-    if (chartData == null) {
-        return;
-    }
 
     const chartOptions = merge(BaseOptionChart(), {
         plotOptions: { bar: { columnWidth: '16%' } },

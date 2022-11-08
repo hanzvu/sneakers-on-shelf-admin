@@ -14,6 +14,7 @@ import Statistical from './sos/layouts/StatisticLayout';
 import LoginLayout from './sos/layouts/LoginLayout';
 import OAuthRedirected from './sos/components/login/OAuthRedirected';
 import DashboardLayout from './sos/layouts/dashboard';
+import ProtectedRoute from './sos/components/login/ProtectedRoute';
 
 // ----------------------------------------------------------------------
 
@@ -21,7 +22,10 @@ export default function Router() {
   return useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element:
+        <ProtectedRoute>
+          <DashboardLayout />
+        </ProtectedRoute>,
       children: [
         { path: '', element: <Statistical /> },
         { path: 'app', element: <DashboardApp /> },
