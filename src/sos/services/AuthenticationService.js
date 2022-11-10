@@ -21,7 +21,7 @@ export const addAuthenticationInterceptor = () => {
                     error.response.config.headers.Authorization = `${response.data.type} ${response.data.token}`;
                     return axios(error.response.config);
                 }).catch(error => {
-                    if (error.response && error.response.status === 403) {
+                    if (error.response && (error.response.status === 403 || error.response.status === 401) ) {
                         removeAuthFromStorage()
                     }
                     return Promise.reject(error);

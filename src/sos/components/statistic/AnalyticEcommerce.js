@@ -20,7 +20,7 @@ const AnalyticEcommerce = ({ color, title, text, percentage, extra }) => (
                         {text}
                     </Typography>
                 </Grid>
-                {percentage && (
+                {percentage != null && (
                     <Grid item>
                         <Chip
                             variant="combined"

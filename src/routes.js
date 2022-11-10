@@ -12,43 +12,45 @@ import LoginLayout from './sos/layouts/LoginLayout';
 import OAuthRedirected from './sos/components/login/OAuthRedirected';
 import DashboardLayout from './sos/layouts/dashboard';
 import ProtectedRoute from './sos/components/login/ProtectedRoute';
+import OrderManagementLayout from './sos/layouts/OrderManagementLayout';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
     {
-      path: '/dashboard',
-      element:
-        <ProtectedRoute>
-          <DashboardLayout />
-        </ProtectedRoute>,
-      children: [
-        { path: '', element: <Statistical /> },
-        { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
-        { path: 'products', element: <Products /> },
-        { path: 'blog', element: <Blog /> },
-      ],
-    },
-    {
-      path: 'login',
-      element: <LoginLayout />,
-    },
-    {
-      path: 'register',
-      element: <Register />,
-    },
-    {
-      path: 'oauth2',
-      children: [
-        { path: 'redirect', element: <OAuthRedirected /> },
-      ],
-    },
-    {
       path: '',
       children: [
         { path: '', element: <Navigate to="/dashboard" replace /> },
+        {
+          path: '/dashboard',
+          element:
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>,
+          children: [
+            { path: '', element: <Statistical /> },
+            { path: 'app', element: <DashboardApp /> },
+            { path: 'user', element: <User /> },
+            { path: 'orders', element: <OrderManagementLayout /> },
+            { path: 'products', element: <Products /> },
+            { path: 'blog', element: <Blog /> },
+          ],
+        },
+        {
+          path: 'oauth2',
+          children: [
+            { path: 'redirect', element: <OAuthRedirected /> },
+          ],
+        },
+        {
+          path: 'register',
+          element: <Register />,
+        },
+        {
+          path: 'login',
+          element: <LoginLayout />,
+        },
         { path: '/404', element: <NotFound /> }
       ]
     },

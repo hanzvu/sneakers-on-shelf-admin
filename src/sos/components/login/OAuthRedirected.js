@@ -16,7 +16,7 @@ export default function OAuthRedirected() {
                 refreshToken: searchParams.get("refresh_token")
             });
         }
-        navigate('/', { replace: true });
+        navigate('/dashboard', { replace: true });
     }, []);
     return null;
 }
