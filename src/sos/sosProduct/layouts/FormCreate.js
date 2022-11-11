@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Spinner} from 'react-bootstrap'
 // components
-
 import {
   MDBBtn,
   MDBContainer,
@@ -35,15 +35,17 @@ import {
 
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import { FileUpload } from '@mui/icons-material';
 import { getTemplateSaveListProduct } from '../services/ProductService'
 
+import CloudinaryUploadWidget from "./uploadImg";
+
 function FromCreate() {
-  const [message, setMessage] = useState("");
+  const FILE_UPLOAD_CLOUD_ENDPOINT = "https://api.cloudinary.com/v1_1/dfcpqgj3f/image/upload";
   const navigate = useNavigate();
 
 
 // call api brand
+const [ imgpPoducts, setImgpPoducts ] = useState([])
 const [brands, setBrands] = useState([]);
 const fetchBrand = async () => {
   const { data } = await Axios.get(
@@ -90,36 +92,59 @@ const handleChangeBrand = event => {
 };
 
 // save product
-const brandKey = {
-  id: "1", 
-  name: "Nike"
-};
-
-const categoryKey = {
-  id: "1", 
-  name: "Giày Bóng Rổ"
-};
-
 const initialFormState = { 
   id: '', 
   name: '', 
-  productGender: "MEN",
-  brand: brandKey,
-  category: categoryKey,
+  productGender: 'MEN',
+  brand: 'Giày bóng rổ',
+  category: 'Giay chạy',
+  productImage: imgpPoducts,
   sellPrice: '',
-  originalPrice: '',
-  importPrice: '',
-  description: ''
+  description: '',
+    size35:'',
+    size36:'',
+    size37:'',
+    size38:'',
+    size39:'',
+    size40:'',
+    size41:'',
+    size42:'',
+    size43:''
 }
+
 	const [ productN, setProductN ] = useState(initialFormState)
-
 	const handleInputChange = event => {
-	const { name, value } = event.target
-  setProductN({ ...productN, 
-    [name]: value 
-  })
+        const { name, value } = event.target
+        setProductN({ ...productN,
+        [name]: value
+        })
 	}
-
+    const handleSubmitImage = async (e) => {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const fileInput = Array.from(form.elements).find(({ name }) => name === 'file');
+        const formData = new FormData();
+        formData.append('upload_preset', 'my-upload');
+        const array = []
+        console.log("fileInput.files.length",fileInput.files.length)
+        for (let i = 0; i < fileInput.files.length; i+=1) {
+            formData.append(`file`, fileInput.files[i])
+            const requestOptions = {
+                method: 'POST',
+                body: formData
+            };
+            fetch(FILE_UPLOAD_CLOUD_ENDPOINT, requestOptions)
+                .then(response => response.text())
+                .then((response) => {
+                    const data = JSON.parse(response);
+                    array.push(data.url)
+                });
+        }
+        setProductN({ ...productN,
+            productImage: array
+        })
+    };
+    console.log("productN",productN)
 // end save product
   const handleSubmit = async (e,productN) => {
     e.preventDefault();
@@ -135,7 +160,8 @@ const initialFormState = {
         body: JSON.stringify(productN),
       });
       const resJson = await res.json();
-      if (resJson.code === 400 || resJson.status === '400') {
+      console.log("resJson",resJson)
+      if (resJson.status === 400) {
         toast.error(resJson.message, {
           position: "bottom-right",
           autoClose: 3000,
@@ -146,7 +172,18 @@ const initialFormState = {
           progress: undefined,
           theme: "light",
           });
-      } else {
+      }else if(resJson.code === 400){
+            toast.error(resJson.message, {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        } else {
         toast.info("Product created successfully", {
           position: "bottom-right",
           autoClose: 3000,
@@ -162,19 +199,18 @@ const initialFormState = {
       console.log(err);
     }
   };
-  
-  
+
+
 // Import
 const [files, setFiles] = useState('');
-   
+    const [isLoading, setLoading] = useState(true)
     const [fileSize, setFileSize] = useState(true);
     
     const [fileUploadProgress, setFileUploadProgress] = useState(false);
     
     const [fileUploadResponse, setFileUploadResponse] = useState(null);
   
-    const FILE_UPLOAD_BASE_ENDPOINT = "http://localhost:8080/content/v1/products/saveList";
-
+    const FILE_UPLOAD_BASE_ENDPOINT = "http://localhost:8080/admin/v1/products/saveList";
     const uploadFileHandler = (event) => {
       setFiles(event.target.files);
      };
@@ -184,32 +220,30 @@ const [files, setFiles] = useState('');
       setFileSize(true);
       setFileUploadProgress(true);
       setFileUploadResponse(null);
-
        const formData = new FormData();
        for (let i = 0; i < files.length; i+=1) {
            formData.append(`files`, files[i])
        }
-
        const requestOptions = {
            method: 'POST',
            body: formData
        };
+        setLoading(false);
        fetch(FILE_UPLOAD_BASE_ENDPOINT, requestOptions)
            .then(async response => {
                const isJson = response.headers.get('content-type')?.includes('application/json');
                const data = isJson && await response.json();
-
                // check for error response
+
                if (!response.ok) {
                 console.log("send file false ")
                    // get error message
                    const error = (data && data.message) || response.status;
                    setFileUploadResponse(data.message);
+                   setLoading(true);
                    return Promise.reject(error);
                }
-               console.log("send file Ok ")
-              console.log(data.message);
-              alert("send file Ok ")
+               setLoading(true);
               setFileUploadResponse(data.message);
            })
            .catch(error => {
@@ -223,25 +257,35 @@ const [files, setFiles] = useState('');
   const handleShow = () => setShow(true);
 
   // dowload template excel insert product
+
 const downloadTemplate = () => {
   getTemplateSaveListProduct()
 }
-
-
   return (
     <Container>
           <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Create Product
           </Typography>
-          <Button variant="primary" onClick={handleShow}>
-              Import List Product 
-              
+          <Button variant="primary" style={{'background-color' : 'black','color': 'wheat',}} onClick={handleShow}>
+              Import List Product
           </Button>
-          <Button variant="primary" onClick={() => downloadTemplate()}>
+          <Button style={{'background-color' : 'black','color': 'wheat',}}  variant="primary" onClick={() => downloadTemplate()}>
               Dowload Template
           </Button>
         </Stack>
+        <Form style={{'padding-bottom':'50px'}} onSubmit={(e) =>handleSubmitImage(e)}>
+            <MDBInput
+                wrapperClass='mb-4'
+                label='Image'
+                id='form1'
+                name='file'
+                multiple
+                type='file' />
+            <Button style={{'background-color' : 'black','color': 'wheat',}} variant="primary" type="submit" >
+                Load image
+            </Button>
+        </Form>
     <Form onSubmit={(e) =>handleSubmit(e,productN)}>
       <MDBRow>
         <MDBCol col='6'>
@@ -261,21 +305,17 @@ const downloadTemplate = () => {
             value={productN.originalPrice}
             name='originalPrice'
             onChange={handleInputChange}
-            id='form1' 
+            id='form1'
             type='number' />
         </MDBCol>
       </MDBRow>
       <MDBRow>
         <MDBCol col='6'>
           Brand
-          <select id="fruit-select">
+          <select id="fruit-select"  name='brand' value={productN.brand} onChange={handleInputChange} >
             {brands.map((option, index) => (
               <option
-              onChange={handleInputChange} 
-              name='brand' 
-              key={index} 
-              defaultValue={productN.brand}
-              value={productN.brand}> 
+              key={index}>
                 {option.name}
               </option>
             ))}
@@ -293,13 +333,11 @@ const downloadTemplate = () => {
       <MDBRow>
         <MDBCol col='6'>
           category
-          <select id="fruit-select">
+          <select id="fruit-select"  name='category' value={productN.category} onChange={handleInputChange}>
             {categorys.map((option, index) => (
-              <option  
-              name='category' 
+              <option
               key={index}
-              defaultValue={productN.category}
-              value={productN.category} onChange={handleInputChange}> 
+              >
                 {option.name}
               </option>
             ))}
@@ -324,31 +362,103 @@ const downloadTemplate = () => {
             onChange={handleInputChange}
             wrapperClass='mb-4' label='Description' id='form1' type='text' />
         </MDBCol>
+
       </MDBRow>
       <MDBRow>
-        <div>
-          <MDBRadio onChange={handleInputChange}  
-                            name ='productGender'  
-                            checked 
-                            defaultValue={productN.productGender}
-                            value={productN.productGender} id='flexRadioDefault1' 
-                            label='MEN' />
-          <MDBRadio onChange={handleInputChange}  
-                            name ='productGender'    
-                            value={productN.productGender} id='flexRadioDefault1' 
-                            label='UNISEX' />
-          <MDBRadio onChange={handleInputChange}  
-                            name ='productGender'   
-                            value={productN.productGender} id='flexRadioDefault1' 
-                            label='WOMAN'/>
-        </div>
+          <MDBCol col='6'>
+            <div col='6' >
+              <MDBRadio onChange={handleInputChange}
+                                checked={productN.productGender}
+                                name ='productGender'
+                                value='MEN' id='flexRadioDefault1'
+                                label='MEN' />
+              <MDBRadio onChange={handleInputChange}
+                                name ='productGender'
+                                value='UNISEX' id='flexRadioDefault1'
+                                label='UNISEX' />
+              <MDBRadio onChange={handleInputChange}
+                                name ='productGender'
+                                value='WOMAN' id='flexRadioDefault1'
+                                label='WOMAN'/>
+            </div>
+         </MDBCol>
       </MDBRow>
-      <Button variant="primary" type="submit" >
-        Submit
-      </Button>
-      <ToastContainer />
+      <MDBRow>
+          <MDBCol col='3'>
+              <MDBInput
+                  value={productN.size35}
+                  name='size35'
+                  onChange={handleInputChange}
+                  wrapperClass='mb-4' label='size 35' id='form1' type='text' />
+          </MDBCol>
+          <MDBCol col='3'>
+              <MDBInput
+                  value={productN.size36}
+                  name='size36'
+                  onChange={handleInputChange}
+                  wrapperClass='mb-4' label='size 36' id='form1' type='text' />
+          </MDBCol>
+          <MDBCol col='3'>
+              <MDBInput
+                  value={productN.size37}
+                  name='size37'
+                  onChange={handleInputChange}
+                  wrapperClass='mb-4' label='size 37' id='form1' type='text' />
+          </MDBCol>
+          <MDBCol col='3'>
+              <MDBInput
+                  value={productN.size38}
+                  name='size38'
+                  onChange={handleInputChange}
+                  wrapperClass='mb-4' label='size 38' id='form1' type='text' />
+          </MDBCol>
+          <MDBCol col='3'>
+              <MDBInput
+                  value={productN.size39}
+                  name='size39'
+                  onChange={handleInputChange}
+                  wrapperClass='mb-4' label='size 39' id='form1' type='text' />
+          </MDBCol>
+      </MDBRow>
+        <MDBRow>
+            <MDBCol col='3'>
+                <MDBInput
+                    value={productN.size40}
+                    name='size40'
+                    onChange={handleInputChange}
+                    wrapperClass='mb-4' label='size 40' id='form1' type='text' />
+            </MDBCol>
+            <MDBCol col='3'>
+                <MDBInput
+                    value={productN.size41}
+                    name='size41'
+                    onChange={handleInputChange}
+                    wrapperClass='mb-4' label='size 41' id='form1' type='text' />
+            </MDBCol>
+            <MDBCol col='3'>
+                <MDBInput
+                    value={productN.size42}
+                    name='size42'
+                    onChange={handleInputChange}
+                    wrapperClass='mb-4' label='size 42' id='form1' type='text' />
+            </MDBCol>
+            <MDBCol col='3'>
+                <MDBInput
+                    value={productN.size43}
+                    name='size43'
+                    onChange={handleInputChange}
+                    wrapperClass='mb-4' label='size 43' id='form1' type='text' />
+            </MDBCol>
+        </MDBRow>
+        <MDBRow>
+            <MDBCol col='3'>
+                <Button style={{'background-color' : 'silver','color': 'blue','width': '150px','height': '55px'}} variant="primary" type="submit" >
+                    Submit
+                </Button>
+                <ToastContainer />
+            </MDBCol>
+        </MDBRow>
     </Form>
-    
     <Modal show={show} onHide={handleClose}
     aria-labelledby="contained-modal-title-vcenter"
     centered>
@@ -364,13 +474,10 @@ const downloadTemplate = () => {
         {!fileSize && <p style={{color:'red'}}>File size exceeded!!</p>}
          {fileUploadProgress && <p style={{color:'red'}}>Uploading File(s)</p>}
         {fileUploadResponse!=null && <p style={{color:'green'}}>{fileUploadResponse}</p>}
-
       </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
+            {isLoading ? "" : <Spinner animation={'border'} />}
         </Modal.Footer>
       </Modal>
     </Container>

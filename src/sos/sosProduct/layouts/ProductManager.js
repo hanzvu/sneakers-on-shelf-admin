@@ -328,13 +328,10 @@ function ProductManager() {
                                 onClick={() => handleEdit(item)}
                         ><FaEdit />
                         </Button>
-
                       </td>
                     </tr>
                 ))}
                 </tbody>
-
-
                 <Modal show={show} onHide={handleClose}
                        size="lg"
                        aria-labelledby="contained-modal-title-vcenter"
