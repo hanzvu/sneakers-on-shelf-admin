@@ -57,10 +57,10 @@ const getTemplateSaveListProduct = async () => {
 }
 
 const paginationProduct = async(params) => {
-    return axios.get(`${BASE_API}/admin/v1/products/pages=${params}`)
+    return axios.get(`${BASE_API}/admin/v1/products?pages=${params}`)
 };
 
-const getAll = async() => {
+const getAll = () => {
     const response =  axios.get(`${BASE_API}/admin/v1/products`)
     return response
 };

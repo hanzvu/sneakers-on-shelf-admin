@@ -4,6 +4,7 @@ import Axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Spinner} from 'react-bootstrap'
+import Form from 'react-bootstrap/Form';
 // components
 import {
   MDBBtn,
@@ -33,11 +34,8 @@ import {
     TablePagination,
   } from '@mui/material';
 
-import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { getTemplateSaveListProduct } from '../services/ProductService'
-
-import CloudinaryUploadWidget from "./uploadImg";
 
 function FromCreate() {
   const FILE_UPLOAD_CLOUD_ENDPOINT = "https://api.cloudinary.com/v1_1/dfcpqgj3f/image/upload";
@@ -312,14 +310,14 @@ const downloadTemplate = () => {
       <MDBRow>
         <MDBCol col='6'>
           Brand
-          <select id="fruit-select"  name='brand' value={productN.brand} onChange={handleInputChange} >
+            <Form.Select id="fruit-select"  name='brand' value={productN.brand} onChange={handleInputChange} >
             {brands.map((option, index) => (
               <option
               key={index}>
                 {option.name}
               </option>
             ))}
-          </select>
+            </Form.Select>
         </MDBCol>
         <MDBCol col='6'>
           <MDBInput wrapperClass='mb-4'
@@ -333,7 +331,7 @@ const downloadTemplate = () => {
       <MDBRow>
         <MDBCol col='6'>
           category
-          <select id="fruit-select"  name='category' value={productN.category} onChange={handleInputChange}>
+            <Form.Select id="fruit-select"  name='category' value={productN.category} onChange={handleInputChange}>
             {categorys.map((option, index) => (
               <option
               key={index}
@@ -341,7 +339,7 @@ const downloadTemplate = () => {
                 {option.name}
               </option>
             ))}
-          </select>
+          </Form.Select>
         </MDBCol>
         <MDBCol col='6'>
           <MDBInput

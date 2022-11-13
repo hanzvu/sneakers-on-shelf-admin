@@ -11,7 +11,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
-
+import 'antd/dist/antd.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 

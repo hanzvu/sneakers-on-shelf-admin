@@ -1,74 +1,57 @@
 import { useState, useEffect } from 'react';
 import Axios from "axios";
-import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { ToastContainer, toast } from 'react-toastify';
-import { FaBeer,FaTrashAlt,FaEdit } from 'react-icons/fa';
+import { FaTrashAlt,FaEdit } from 'react-icons/fa';
 // eslint-disable-next-line import/no-unresolved
 import Page from 'src/components/Page';
 // eslint-disable-next-line import/no-unresolved
 import Iconify from 'src/components/Iconify';
+import {Table} from 'antd';
 // material
 import {
   Card,
-
   Stack,
-  Avatar,
-  Button,
-  Checkbox,
-  TableRow,
-  TableBody,
-  TableCell,
   Container,
   Typography,
   TableContainer,
-  TablePagination,
 } from '@mui/material';
 import {
-  MDBBtn,
-  MDBContainer,
   MDBRow,
   MDBCol,
-  MDBCard,
-  MDBCardBody,
   MDBInput,
-  MDBCheckbox,
-  MDBIcon,
   MDBRadio
 }
   from 'mdb-react-ui-kit';
-// components
-import { listProducts } from '../api/product';
 
-import { getAll,deleteProductById, updateProductById } from '../services/ProductService'
+import { Button,ButtonGroup} from 'reactstrap';
+// components
+
+import {deleteProductById, paginationProduct,findProduct} from '../services/ProductService'
+import { findProducDetailByProductid } from '../services/DetailService'
+import { findBrandById} from '../services/BrandService'
+import { findCategoryById} from '../services/CategoryService'
 // ----------------------------------------------------------------------
 function ProductManager() {
-
-  const brandKey = {
-    id: '',
-    name: ''
-  };
-
-  const categoryKey = {
-    id: '',
-    name: ''
-  };
-
-
   const initialFormState = {
     name: '',
     productGender: '',
-    brand: brandKey,
-    category: categoryKey,
+    brand: {
+      id: '',
+      name: ''
+    },
+    category: {
+      id: '',
+      name: ''
+    },
     sellPrice: '',
     originalPrice: '',
     importPrice: '',
     description: ''
   }
-  const [productGender, setProductGender] = useState("");
   const [productKey, setProductKey] = useState(initialFormState);
-
+  const [categorys, setCategorys] = useState([]);
   // call api brand
   const [brands, setBrands] = useState([]);
   const fetchBrand = async () => {
@@ -87,7 +70,6 @@ function ProductManager() {
 
 
   // call api category
-  const [categorys, setCategorys] = useState([]);
   const fetchCategory = async () => {
     const { data } = await Axios.get(
         "http://localhost:8080/api/v1/categories"
@@ -103,7 +85,6 @@ function ProductManager() {
 
 
 // and category
-  const [message, setMessage] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -150,17 +131,18 @@ function ProductManager() {
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(null);
-
-  const fetchProducts = async () => {
-    const { data } = await getAll()
-    const products = data;
-    setProducts(products);
-    console.log(products);
-    setLoading()
+  const [totalPage,setTotal] = useState(1)
+  const fetchProducts = async (page) => {
+    console.log(page);
+    if(page !== undefined ){
+      const { data } = await paginationProduct(page)
+      setProducts(data.content);
+      setTotal(data.totalElements)
+      setLoading()
+    }
   };
-
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(1);
   }, []);
 
   const [idProduct, setIdProduct] = useState('');
@@ -169,7 +151,6 @@ function ProductManager() {
     code: '',
     message: ''
   };
-
   const [messageDelete, setMessageDelete] = useState(data);
   const deleteProduct = (id) => {
     setProducts(products.filter((p) => p.id !== id))
@@ -203,47 +184,95 @@ function ProductManager() {
     }
 
   }
-
-
-  const [productEdit, setProductEdit] = useState({});
   const [show, setShow] = useState(false);
   const handleClose = () => {
     fetchProducts()
     setShow(false);
   }
   const handleShow = () =>setShow(true);
-  const handleEdit = (product) => {
+  const handleEdit = async (id) => {
+    const { data } =  await findProduct(id);
+    setProductKey(data)
     handleShow(true);
-
-    setProductKey(product);
   };
-  const handleInputChange = event => {
+
+  const handleInputChange = async event => {
     const { name, value } = event.target
-    setProductKey({ ...productKey,
-      [name]: value
-    })
+    if(name === 'brand'){
+      const { data } =  await findBrandById(value);
+        setProductKey({ ...productKey,
+        [name]: data
+      })
+    } else if(name === 'category'){
+      const { data } =  await findCategoryById(value);
+      setProductKey({ ...productKey,
+      [name]: data
+    })}
+    else{
+        setProductKey({ ...productKey,
+        [name]: value
+      })
+    }
   }
   /// product detail
 
   const [modalShow, setModalShow] = useState(false);
-  const [proDetai, setProDetai] = useState({});
   const [productDetails, setProductDetails] = useState([]);
-  const showProductDetail = async(item,bool) => {
+  const showProductDetail = async(id,bool) => {
     console.log("doubleclick: ")
-    setProDetai(item)
-    const  {data} = await Axios.get(
-        `http://localhost:8080/admin/v1/productDetails/${item.id}`
-    );
-    const products = data;
-    console.log("data: ")
-    console.log(products)
-    setProductDetails(products)
-    setModalShow(bool)
+    if(id !== undefined){
+      const  {data} =  await findProducDetailByProductid(id);
+      const products = data;
+      console.log("data: ")
+      console.log(products)
+      setProductDetails(products)
+      setModalShow(bool)
+    }
   }
   useEffect(() => {
     showProductDetail();
   }, []);
-
+  ///
+  const colums = [
+    {title: 'name',dataIndex: 'name'},
+    {title: 'Gender',dataIndex: 'productGender'},
+    {title: 'Brand',dataIndex: 'brand',render: ( _,{brand})=>{ return (
+        <div>
+          {brand.name}
+        </div>
+      )}},
+    {title: 'Category',dataIndex: 'category',render: ( _,{category})=>{ return (
+          <div>
+            {category.name}
+          </div>
+      )}},
+    {title: 'SellPrice',dataIndex: 'sellPrice'},
+    {title: 'Description',dataIndex: 'description'},
+    {title: 'productImage',dataIndex: 'productImage',render: ( _,{productImage})=>{ return (
+        <div>
+          <img width={'50px'} src={productImage.image} alt={"erro"} />
+        </div>
+      )}},
+    {title: 'Acction',dataIndex:'id', render:(_,{id})=>{return (
+        <div>
+          <ButtonGroup>
+            <Button size="sm" color="danger"
+                    onChange={(e) => setIdProduct(id)}
+                    onClick={() => deleteProduct(id)}><Iconify
+                icon={'ep:delete-filled'} width={22} height={22} /></Button>
+            <ToastContainer />
+            <Button size="sm" color="primary"
+                    onClick={() => handleEdit(id)}>
+              <Iconify icon={'eva:edit-2-fill'}
+                       width={22} height={22} /></Button>
+            <Button size="sm" color="success"
+                    onClick={() =>showProductDetail(id,true)} >
+              <Iconify icon={'fluent:apps-list-detail-24-filled'} width={22} height={22} />
+            </Button>
+       </ButtonGroup>
+      </div>
+      )} }
+  ]
   function MyVerticallyCenteredModal(props) {
     return (
         <Modal
@@ -289,49 +318,9 @@ function ProductManager() {
           <Card >
 
             <TableContainer sx={{ minWidth: 800 }}>
-              <Table striped bordered hover>
-                <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Gender</th>
-                  <th>Brand</th>
-                  <th>Category</th>
-                  <th>SellPrice</th>
-                  <th>OriginalPrice</th>
-                  <th>ImportPrice</th>
-                  <th>Description</th>
-                  <th>Image</th>
-                  <th rowSpan={2}>Acction</th>
-                </tr>
-                </thead>
-                <tbody>
-                {products.map((item, index) => (
-                    <tr key={index} onDoubleClick={() =>showProductDetail(item,true)}>
-                      <td value={item.name}>{item.name}</td>
-                      <td value={item.productGender}>{item.productGender}</td>
-                      <td value={item.brand}>{item.brand!== null?item.brand.name:""}</td>
-                      <td value={item.category}>{item.category !== null?item.category.name:""}</td>
-                      <td value={item.sellPrice}>{item.sellPrice}</td>
-                      <td value={item.originalPrice}>{item.originalPrice}</td>
-                      <td value={item.importPrice}>{item.importPrice}</td>
-                      <td value={item.description}>{item.description}</td>
-                      <td value={item.productImage}>
-                        <img width='50px' src={item.productImage !== null? item.productImage.image: ""} alt="hello" />
-                      </td>
-                      <td>
-                        <Button variant="outlined"
-                                value={idProduct}
-                                onChange={(e) => setIdProduct(item.id)}
-                                onClick={() => deleteProduct(item.id)} > <FaTrashAlt /></Button>
-                        <ToastContainer />
-                        <Button variant="outlined"
-                                onClick={() => handleEdit(item)}
-                        ><FaEdit />
-                        </Button>
-                      </td>
-                    </tr>
-                ))}
-                </tbody>
+              <Table columns={colums} dataSource={products}  pagination={{total : totalPage,onChange: page =>{
+                  fetchProducts(page)
+                }}}/>
                 <Modal show={show} onHide={handleClose}
                        size="lg"
                        aria-labelledby="contained-modal-title-vcenter"
@@ -367,17 +356,15 @@ function ProductManager() {
                       <MDBRow>
                         <MDBCol col='6'>
                           Brand
-                          <select  id="fruit-select">
-                            {brands.map((option, index) => (
+                          <Form.Select  id="fruit-select" name='brand' value={productKey.brand.id} onChange={handleInputChange}>
+                            {brands.map((brand,key) =>(
                                 <option
-                                    onChange={handleInputChange}
-                                    selected={productKey.brand.name === option.name }
-                                    name='brand' key={index}
-                                    value={option.name}>
-                                  {option.name}
+                                    key={key}
+                                    value={brand.id}>
+                                  {brand.name}
                                 </option>
-                            ))}
-                          </select>
+                              ) )}
+                          </Form.Select>
                         </MDBCol>
                         <MDBCol col='6'>
                           <MDBInput wrapperClass='mb-4'
@@ -391,18 +378,18 @@ function ProductManager() {
                       <MDBRow>
                         <MDBCol col='6'>
                           category
-                          <select id="fruit-select">
+                          <Form.Select id="fruit-select"
+                                       name='category'
+                                       value={productKey.category.id}
+                                       onChange={handleInputChange}>
                             {categorys.map((option, index) => (
                                 <option
-                                    onChange={handleInputChange}
-                                    name='category'
-                                    selected={productKey.category.name === option.name }
                                     key={index}
-                                    value={productKey.category}>
+                                    value={option.id}>
                                   {option.name}
                                 </option>
                             ))}
-                          </select>
+                          </Form.Select>
                         </MDBCol>
                         <MDBCol col='6'>
                           <MDBInput
@@ -430,19 +417,19 @@ function ProductManager() {
                               onChange={handleInputChange}
                               name ='productGender'
                               defaultChecked={productKey.productGender === "MEN" }
-                              value={productKey.productGender} id='flexRadioDefault1'
+                              value={"MEN"} id='flexRadioDefault1'
                               label='MEN'/>
                           <MDBRadio
                               onChange={handleInputChange}
                               name ='productGender'
                               defaultChecked={productKey.productGender === "UNISEX" }
-                              value={productKey.productGender} id='flexRadioDefault1'
+                              value={"UNISEX"} id='flexRadioDefault1'
                               label='UNISEX'/>
                           <MDBRadio
                               onChange={handleInputChange}
                               name ='productGender'
                               defaultChecked={productKey.productGender === "WOMAN" }
-                              value={productKey.productGender} id='flexRadioDefault1'
+                              value={"WOMAN"} id='flexRadioDefault1'
                               label='WOMAN'/>
                         </div>
                       </MDBRow>
@@ -457,7 +444,6 @@ function ProductManager() {
                     show={modalShow}
                     onHide={() => setModalShow(false)}
                 />
-              </Table>
             </TableContainer>
           </Card>
         </Container>
