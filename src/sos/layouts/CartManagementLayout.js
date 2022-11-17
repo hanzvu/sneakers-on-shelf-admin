@@ -3,10 +3,10 @@ import { Outlet } from 'react-router-dom';
 import Page from "../../components/Page";
 
 
-export default function OrderManagementLayout() {
+export default function CartManagementLayout() {
 
     return (<>
-        <Page title="Quản Lý Đơn Hàng">
+        <Page title="Quản Lý Giỏ Hàng">
             <Container>
                 <Outlet />
             </Container>

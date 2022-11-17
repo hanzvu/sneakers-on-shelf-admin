@@ -35,3 +35,18 @@ export const deactiveAddress = async (id) => {
 export const logoutAccount = () => {
     store.dispatch(clearAccount())
 }
+
+export const getAccountDTOs = async (params) => {
+    const response = await axios.get(`${BASE_API}/admin/v1/accounts`, { params });
+    return response.data;
+}
+
+export const getAccountDTOById = async (id) => {
+    const response = await axios.get(`${BASE_API}/admin/v1/accounts/${id}`);
+    const rs = response.data;
+    rs.customerInfos = rs.customerInfos.reduce((obj, row) => {
+        obj[row.id] = row;
+        return obj
+    }, {});
+    return rs;
+}

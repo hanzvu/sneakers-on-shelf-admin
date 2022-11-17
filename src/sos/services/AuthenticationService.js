@@ -16,12 +16,17 @@ export const addAuthenticationInterceptor = () => {
         async error => {
             axios.interceptors.response.eject(interceptor);
             const auth = getAuthenticatedUser();
+
+            console.log("?");
+            console.log(error.response);
+            console.log(auth);
+
             if (error.response && (error.response.status === 403 || error.response.status === 401) && auth != null) {
                 return refreshToken(auth.refreshToken).then(response => {
                     error.response.config.headers.Authorization = `${response.data.type} ${response.data.token}`;
                     return axios(error.response.config);
                 }).catch(error => {
-                    if (error.response && (error.response.status === 403 || error.response.status === 401) ) {
+                    if (error.response && (error.response.status === 403 || error.response.status === 401)) {
                         removeAuthFromStorage()
                     }
                     return Promise.reject(error);

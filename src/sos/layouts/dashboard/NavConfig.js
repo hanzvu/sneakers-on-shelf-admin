@@ -13,8 +13,18 @@ const navConfig = [
   },
   {
     title: 'Đơn Hàng',
-    path: '/dashboard/orders',
-    icon: getIcon('eva:shopping-cart-fill'),
+    path: '/dashboard/orders?status=PENDING',
+    icon: getIcon('fa:cart-arrow-down'),
+  },
+  {
+    title: 'Tạo Đơn Hàng',
+    path: '/dashboard/carts',
+    icon: getIcon('fa:cart-plus'),
+  },
+  {
+    title: 'Mã Giảm Giá',
+    path: '/dashboard/vouchers',
+    icon: getIcon('mdi:voucher'),
   },
   {
     title: 'user',

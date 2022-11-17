@@ -13,6 +13,14 @@ import OAuthRedirected from './sos/components/login/OAuthRedirected';
 import DashboardLayout from './sos/layouts/dashboard';
 import ProtectedRoute from './sos/components/login/ProtectedRoute';
 import OrderManagementLayout from './sos/layouts/OrderManagementLayout';
+import OrderList from './sos/components/order/OrderList';
+import OrderDetail from './sos/components/order/OrderDetail';
+import CartManagementLayout from './sos/layouts/CartManagementLayout';
+import CartDetail from './sos/components/cart/CartDetail';
+import CartList from './sos/components/cart/CartList';
+import VoucherList from './sos/components/voucher/VoucherList';
+import VoucherManagementLayout from './sos/layouts/VoucherManagementLayout';
+import CreateVoucher from './sos/components/voucher/CreateVoucher';
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +40,30 @@ export default function Router() {
             { path: '', element: <Statistical /> },
             { path: 'app', element: <DashboardApp /> },
             { path: 'user', element: <User /> },
-            { path: 'orders', element: <OrderManagementLayout /> },
+            {
+              path: 'orders',
+              element: <OrderManagementLayout />,
+              children: [
+                { path: '', element: <OrderList /> },
+                { path: ':id', element: <OrderDetail /> },
+              ]
+            },
+            {
+              path: 'carts',
+              element: <CartManagementLayout />,
+              children: [
+                { path: '', element: <CartList /> },
+                { path: ':id', element: <CartDetail /> },
+              ]
+            },
+            {
+              path: 'vouchers',
+              element: <VoucherManagementLayout />,
+              children: [
+                { path: '', element: <VoucherList /> },
+                { path: 'create', element: <CreateVoucher /> },
+              ]
+            },
             { path: 'products', element: <Products /> },
             { path: 'blog', element: <Blog /> },
           ],
