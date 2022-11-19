@@ -94,7 +94,7 @@ const initialFormState = {
   id: '', 
   name: '', 
   productGender: 'MEN',
-  brand: 'Giày bóng rổ',
+  brand: 'Nike',
   category: 'Giay chạy',
   productImage: imgpPoducts,
   sellPrice: '',
@@ -117,6 +117,7 @@ const initialFormState = {
         [name]: value
         })
 	}
+
     const handleSubmitImage = async (e) => {
         e.preventDefault();
         const form = e.currentTarget;
@@ -142,10 +143,10 @@ const initialFormState = {
             productImage: array
         })
     };
-    console.log("productN",productN)
 // end save product
   const handleSubmit = async (e,productN) => {
     e.preventDefault();
+      handleSubmitImage(e)
     try {
       const res = await fetch("http://localhost:8080/content/v1/products/save", {
         method: "POST",
@@ -200,12 +201,10 @@ const initialFormState = {
 
 
 // Import
-const [files, setFiles] = useState('');
-    const [isLoading, setLoading] = useState(true)
     const [fileSize, setFileSize] = useState(true);
-    
+    const [files, setFiles] = useState('');
+    const [isLoading, setLoading] = useState(true)
     const [fileUploadProgress, setFileUploadProgress] = useState(false);
-    
     const [fileUploadResponse, setFileUploadResponse] = useState(null);
   
     const FILE_UPLOAD_BASE_ENDPOINT = "http://localhost:8080/admin/v1/products/saveList";
@@ -240,6 +239,7 @@ const [files, setFiles] = useState('');
                    setFileUploadResponse(data.message);
                    setLoading(true);
                    return Promise.reject(error);
+
                }
                setLoading(true);
               setFileUploadResponse(data.message);
@@ -272,7 +272,9 @@ const downloadTemplate = () => {
               Dowload Template
           </Button>
         </Stack>
-        <Form style={{'padding-bottom':'50px'}} onSubmit={(e) =>handleSubmitImage(e)}>
+    <Form onSubmit={(e) =>handleSubmit(e,productN)}>
+      <MDBRow>
+        <MDBCol col='6'>
             <MDBInput
                 wrapperClass='mb-4'
                 label='Image'
@@ -280,13 +282,6 @@ const downloadTemplate = () => {
                 name='file'
                 multiple
                 type='file' />
-            <Button style={{'background-color' : 'black','color': 'wheat',}} variant="primary" type="submit" >
-                Load image
-            </Button>
-        </Form>
-    <Form onSubmit={(e) =>handleSubmit(e,productN)}>
-      <MDBRow>
-        <MDBCol col='6'>
           <MDBInput
             wrapperClass='mb-4'
             label='Name'

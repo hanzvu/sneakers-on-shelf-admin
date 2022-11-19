@@ -1,7 +1,7 @@
 import axios from "axios";
 import { BASE_API } from "./ApplicationConstant";
 
-const findCategories = async (params) => {
+const findCategories = async () => {
     return  axios.get(`${BASE_API}/admin/v1/categories`)
     
 }

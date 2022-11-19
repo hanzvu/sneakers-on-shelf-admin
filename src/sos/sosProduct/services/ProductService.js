@@ -25,14 +25,14 @@ const addProduct = async (product) => {
     return response;
 } 
 
-const updateProductById = async (product) => {
-    return axios.post(`${BASE_API}/admin/v1/products/update`,{
+const updateProductBy = async (product) => {
+    return axios.post(`${BASE_API}/admin/v1/products/updated`,{
         method: "POST",
         headers: {
-            Prefer: 'params=single-object',
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'charset': 'UTF-8'
+          Prefer: 'params=single-object',
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'charset': 'UTF-8'
         },
         body: JSON.stringify(product),
     });
@@ -65,4 +65,4 @@ const getAll = () => {
     return response
 };
     
-export {getAll, findProducts, paginationProduct,findProduct,addProduct,deleteProductById ,updateProductById,getTemplateSaveListProduct}
+export {getAll, findProducts, paginationProduct,findProduct,addProduct,deleteProductById ,updateProductBy,getTemplateSaveListProduct}
