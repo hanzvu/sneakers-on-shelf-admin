@@ -41,7 +41,6 @@ export default function AccountPopover() {
 
   const [open, setOpen] = useState(null);
 
-
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
@@ -76,7 +75,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.picture} alt="photoURL" referrerPolicy="no-referrer" />
+        <Avatar src={account.picture} alt="photoURL" imgProps={{ referrerPolicy: "no-referrer" }} />
       </IconButton>
 
       <MenuPopover

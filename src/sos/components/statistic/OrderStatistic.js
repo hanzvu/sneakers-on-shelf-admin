@@ -27,7 +27,7 @@ export default function OrderStatistic() {
                 <AnalyticEcommerce title="Hôm Nay" text={`${statisticData.dailyOrderCount} Đơn Hàng / ${fCurrency(statisticData.dailyOrderAmount)}`} extra={`Tổng số sản phẩm : ${statisticData.dailyProductCount}`} />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-                <AnalyticEcommerce title="Hủy Đơn Tháng Này" text={`${statisticData.monthlyCancelledOrderCount} / ${statisticData.monthlyTotalOrderCount} Đơn Hàng`} percentage={statisticData.monthlyCancelledOrderCount / statisticData.monthlyTotalOrderCount * 100} color={"error"} extra={`Tổng số sản phẩm : ${statisticData.monthlyCancelledProductCount}`} />
+                <AnalyticEcommerce title="Hủy Đơn Tháng Này" text={`${statisticData.monthlyCancelledOrderCount} / ${statisticData.monthlyTotalOrderCount} Đơn Hàng`} percentage={statisticData.monthlyTotalOrderCount !== 0 ? statisticData.monthlyCancelledOrderCount / statisticData.monthlyTotalOrderCount * 100 : 0} color={"error"} extra={`Tổng số sản phẩm : ${statisticData.monthlyCancelledProductCount}`} />
             </Grid>
         </Grid>
     </>)

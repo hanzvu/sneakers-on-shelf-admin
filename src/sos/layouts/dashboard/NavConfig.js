@@ -12,6 +12,21 @@ const navConfig = [
     icon: getIcon('eva:pie-chart-2-fill'),
   },
   {
+    title: 'Đơn Hàng',
+    path: '/dashboard/orders?status=PENDING',
+    icon: getIcon('fa:cart-arrow-down'),
+  },
+  {
+    title: 'Tạo Đơn Hàng',
+    path: '/dashboard/carts',
+    icon: getIcon('fa:cart-plus'),
+  },
+  {
+    title: 'Mã Giảm Giá',
+    path: '/dashboard/vouchers',
+    icon: getIcon('mdi:voucher'),
+  },
+  {
     title: 'user',
     path: '/dashboard/user',
     icon: getIcon('eva:people-fill'),

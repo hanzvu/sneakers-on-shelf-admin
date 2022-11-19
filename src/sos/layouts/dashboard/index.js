@@ -7,6 +7,7 @@ import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
 import { addAuthenticationInterceptor } from '../../services/AuthenticationService';
 import { fetchAccount } from '../../services/AccountService';
+import MySnackbar from '../../components/common/MySnackbar';
 
 // ----------------------------------------------------------------------
 
@@ -58,6 +59,7 @@ export default function DashboardLayout() {
       <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
       <MainStyle>
         <Outlet />
+        <MySnackbar />
       </MainStyle>
     </RootStyle>
   );
