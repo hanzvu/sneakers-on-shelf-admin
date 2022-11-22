@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import { removeFromCart, setCartItemQuantity } from '../../services/CartService';
 import { fCurrency } from '../../../utils/formatNumber';
 import CartIncrementer from './CartIncrementer';
@@ -37,21 +37,23 @@ export default function CartItem({ item, onSuccess }) {
     }
 
     return (<>
-        <Grid container spacing={1} py={3} className={"border-bottom"}>
+        <Grid container spacing={1} className={"border-bottom"}>
             <Grid item container lg={7} spacing={3}>
-                <Grid item lg={3} xs={12}>
+                <Grid item lg={4} xs={12}>
                     <Link to={`/products/${productId}`}><img src={image} className="img-fluid" alt='product' /></Link>
                 </Grid>
-                <Grid item container lg={9} xs={12} justifyContent={"space-around"} direction={"column"}>
-                    <Typography variant="h5" gutterBottom>
-                        {name}
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Size : {size}
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        {fCurrency(price)}
-                    </Typography>
+                <Grid item container lg={8} xs={12} justifyContent={"space-around"} direction={"column"}>
+                    <Stack spacing={1}>
+                        <Typography variant='h5'>
+                            {name}
+                        </Typography>
+                        <Typography variant='body2' color={"crimson"}>
+                            {fCurrency(price)}
+                        </Typography>
+                        <Typography variant='body2' color={"dimgray"}>
+                            Size : {size}
+                        </Typography>
+                    </Stack>
                 </Grid>
             </Grid>
             <Grid item lg={5} container spacing={2}>

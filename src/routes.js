@@ -21,6 +21,8 @@ import CartList from './sos/components/cart/CartList';
 import VoucherList from './sos/components/voucher/VoucherList';
 import VoucherManagementLayout from './sos/layouts/VoucherManagementLayout';
 import CreateVoucher from './sos/components/voucher/CreateVoucher';
+import TransactionManagementLayout from './sos/layouts/TransactionManagementLayout';
+import TransactionList from './sos/components/transaction/TransactionList';
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +56,13 @@ export default function Router() {
               children: [
                 { path: '', element: <CartList /> },
                 { path: ':id', element: <CartDetail /> },
+              ]
+            },
+            {
+              path: 'transactions',
+              element: <TransactionManagementLayout />,
+              children: [
+                { path: '', element: <TransactionList /> },
               ]
             },
             {

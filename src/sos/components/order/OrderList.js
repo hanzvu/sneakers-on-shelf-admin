@@ -117,10 +117,9 @@ export default function OrderList() {
                                     <TableCell align="center">Loại Đơn Hàng</TableCell>
                                     <TableCell align="center">Tên Khách Hàng</TableCell>
                                     <TableCell align="center">Số Điện Thoại</TableCell>
-                                    <TableCell align="center">Tổng Số Sản Phẩm</TableCell>
+                                    <TableCell align="center" width={"9%"}>Tổng Số Sản Phẩm</TableCell>
                                     <TableCell align="center">Tổng Số Tiền</TableCell>
-                                    <TableCell align="center">Ngày Tạo</TableCell>
-                                    <TableCell align="center">Thao Tác</TableCell>
+                                    <TableCell align="center" width={"10%"}>Ngày Tạo</TableCell>
                                 </TableRow>
                             </TableHead>
 
@@ -133,7 +132,7 @@ export default function OrderList() {
                                             tabIndex={-1}
                                             role="checkbox">
                                             <TableCell align="center">
-                                                {order.id}
+                                                <Link to={`/dashboard/orders/${order.id}`}>{order.id}</Link>
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Chip label={order.orderStatus.description} color={order.orderStatus.color} />
@@ -143,22 +142,28 @@ export default function OrderList() {
                                             </TableCell>
                                             <TableCell align="center">
                                                 {
-                                                    order.fullname ? order.fullname : <Chip label='Khách Lẻ' color="default" />
+                                                    order.fullname ?
+                                                        <Typography variant={"body2"}>
+                                                            {order.fullname}
+                                                        </Typography> : <Chip label='Khách Lẻ' color="default" />
                                                 }
                                             </TableCell>
                                             <TableCell align="center">
-                                                {
-                                                    order.phone ? order.phone : ''
-                                                }
+                                                <Typography variant={"body2"}>
+                                                    {order.phone ? order.phone : ''}
+                                                </Typography>
                                             </TableCell>
-                                            <TableCell align="center" width={"9%"}>{order.productCount}</TableCell>
-                                            <TableCell align="center">{fCurrency(order.total)}</TableCell>
-                                            <TableCell align="center" width={"10%"}>
+                                            <TableCell align="center">{order.productCount}</TableCell>
+                                            <TableCell align="center">
+                                                <Typography color={"crimson"} variant={"body2"}>
+                                                    {fCurrency(order.total)}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
                                                     {new Date(order.createDate).toLocaleString()}
                                                 </Typography>
                                             </TableCell>
-                                            <TableCell align="center"><Link to={`/dashboard/orders/${order.id}`}>Chi Tiết</Link></TableCell>
                                         </TableRow>
                                     ))
                                 }

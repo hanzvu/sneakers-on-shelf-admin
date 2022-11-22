@@ -5,33 +5,33 @@ import { fetchProvincesToStore } from "../../services/DeliveryService";
 import ProvinceSelector from "./ProvinceSelector";
 import WardSelector from "./WardSelector";
 
-export default function AccountAddressForm({ haveEmail, data, addressFormInputChange, handleDone }) {
+export default function AccountAddressForm({ haveEmail, addressFormInput, setAddressFormInput, handleAddressSelectDone }) {
 
     useEffect(() => {
         fetchProvincesToStore();
     }, [])
 
     const setProvince = province => {
-        addressFormInputChange({ ...data, province, district: null, ward: null })
+        setAddressFormInput({ ...addressFormInput, province, district: null, ward: null })
     }
 
     const setDistrict = district => {
-        addressFormInputChange({ ...data, district, ward: null })
+        setAddressFormInput({ ...addressFormInput, district, ward: null })
     }
 
     const setWard = ward => {
-        addressFormInputChange({ ...data, ward })
-        if (handleDone != null) {
-            handleDone(ward.WardCode);
+        setAddressFormInput({ ...addressFormInput, ward })
+        if (handleAddressSelectDone != null) {
+            handleAddressSelectDone(ward.WardCode);
         }
     }
 
     return (<>
         <Container disableGutters>
             <Stack spacing={2} alignItems={"flex-end"}>
-                <TextField label="Họ và tên" value={data.fullname} onChange={e => { addressFormInputChange({ ...data, fullname: e.target.value }) }} variant="outlined" fullWidth />
-                <TextField label="Số điện thoại" value={data.phone} onChange={e => { addressFormInputChange({ ...data, phone: e.target.value }) }} variant="outlined" fullWidth />
-                {haveEmail && <TextField label="Email" type="email" value={data.email} onChange={e => { addressFormInputChange({ ...data, email: e.target.value }) }} variant="outlined" fullWidth />}
+                <TextField label="Họ và tên" value={addressFormInput.fullname} onChange={e => { setAddressFormInput({ ...addressFormInput, fullname: e.target.value }) }} variant="outlined" fullWidth />
+                <TextField label="Số điện thoại" value={addressFormInput.phone} onChange={e => { setAddressFormInput({ ...addressFormInput, phone: e.target.value }) }} variant="outlined" fullWidth />
+                {haveEmail && <TextField label="Email" type="email" value={addressFormInput.email} onChange={e => { setAddressFormInput({ ...addressFormInput, email: e.target.value }) }} variant="outlined" fullWidth />}
                 <Grid container spacing={1}>
                     <Grid item md={4} xs={12}>
                         <ProvinceSelector setProvince={setProvince} />
@@ -43,7 +43,7 @@ export default function AccountAddressForm({ haveEmail, data, addressFormInputCh
                         <WardSelector setWard={setWard} />
                     </Grid>
                 </Grid>
-                <TextField label="Địa chỉ" onChange={e => { addressFormInputChange({ ...data, address: e.target.value }) }} variant="outlined" fullWidth />
+                <TextField label="Địa chỉ" onChange={e => { setAddressFormInput({ ...addressFormInput, address: e.target.value }) }} variant="outlined" fullWidth />
             </Stack>
         </Container>
     </>)

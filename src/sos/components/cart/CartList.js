@@ -125,13 +125,23 @@ export default function CartList() {
                                             tabIndex={-1}
                                             role="checkbox">
                                             <TableCell align="center">
-                                                {cart.id}
+                                                <Typography variant="body2">
+                                                    {cart.id}
+                                                </Typography>
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Chip label={cart.cartStatus.description} color={cart.cartStatus.color} />
                                             </TableCell>
-                                            <TableCell align="center" width={"9%"}>{cart.productCount}</TableCell>
-                                            <TableCell align="center">{fCurrency(cart.total)}</TableCell>
+                                            <TableCell align="center" width={"9%"}>
+                                                <Typography variant="body2">
+                                                    {cart.productCount}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Typography variant="body2" color={"crimson"}>
+                                                    {fCurrency(cart.total)}
+                                                </Typography>
+                                            </TableCell>
                                             <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
                                                     {new Date(cart.createDate).toLocaleString()}

@@ -47,7 +47,7 @@ AnalyticEcommerce.propTypes = {
     color: PropTypes.string,
     title: PropTypes.string,
     count: PropTypes.string,
-    percentage: PropTypes.number,
+    percentage: PropTypes.string,
     isLoss: PropTypes.bool,
     extra: PropTypes.oneOfType([PropTypes.node, PropTypes.string])
 };

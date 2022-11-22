@@ -14,12 +14,12 @@ export const addAuthenticationInterceptor = () => {
     const interceptor = axios.interceptors.response.use(
         response => response,
         async error => {
+            if (error.code === 'ERR_NETWORK') {
+                return Promise.reject(error);
+            }
+
             axios.interceptors.response.eject(interceptor);
             const auth = getAuthenticatedUser();
-
-            console.log("?");
-            console.log(error.response);
-            console.log(auth);
 
             if (error.response && (error.response.status === 403 || error.response.status === 401) && auth != null) {
                 return refreshToken(auth.refreshToken).then(response => {

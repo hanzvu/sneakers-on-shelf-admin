@@ -18,16 +18,22 @@ export const updateOrderStatus = async (id, data) => {
     return response;
 }
 
-
-export const updateDeliveryStatus = async (id, value) => {
-    const response = await axios.put(`${BASE_API}/admin/v1/deliveries/${id}/delivery-status`, value,
-        { headers: { "Content-Type": "application/json" } });
+export const updateOrderAddress = async (id, value) => {
+    const response = await axios.put(`${BASE_API}/admin/v1/orders/${id}/order-address`, value);
     return response;
 }
 
+export const updateOrderItemQuantity = async (id, data) => {
+    const response = await axios.put(`${BASE_API}/admin/v1/order-items/${id}`, data);
+    return response;
+}
 
-export const updatePaymentStatus = async (id, value) => {
-    const response = await axios.put(`${BASE_API}/admin/v1/orders/${id}/payment-status`, value,
-        { headers: { "Content-Type": "application/json" } });
+export const deleteOrderItem = async (id, params) => {
+    const response = await axios.delete(`${BASE_API}/admin/v1/order-items/${id}`, { params });
+    return response;
+}
+
+export const addOrderItem = async (id, data) => {
+    const response = await axios.post(`${BASE_API}/admin/v1/orders/${id}/order-items`, data);
     return response;
 }

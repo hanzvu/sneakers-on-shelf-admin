@@ -8,7 +8,7 @@ const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 const navConfig = [
   {
     title: 'dashboard',
-    path: '/dashboard/app',
+    path: '/dashboard',
     icon: getIcon('eva:pie-chart-2-fill'),
   },
   {
@@ -20,6 +20,11 @@ const navConfig = [
     title: 'Tạo Đơn Hàng',
     path: '/dashboard/carts',
     icon: getIcon('fa:cart-plus'),
+  },
+  {
+    title: 'Thu Chi',
+    path: '/dashboard/transactions',
+    icon: getIcon('fa6-solid:money-bill-transfer'),
   },
   {
     title: 'Mã Giảm Giá',
