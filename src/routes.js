@@ -31,7 +31,7 @@ export default function Router() {
     {
       path: '',
       children: [
-        { path: '', element: <Navigate to="/dashboard" replace /> },
+        { path: '', element: <Navigate to="/dashboard/statistic" replace /> },
         {
           path: '/dashboard',
           element:
@@ -39,6 +39,7 @@ export default function Router() {
               <DashboardLayout />
             </ProtectedRoute>,
           children: [
+            { path: '', element: <Navigate to="/dashboard/statistic" replace /> },
             { path: 'statistic', element: <Statistical /> },
             { path: 'user', element: <User /> },
             {
