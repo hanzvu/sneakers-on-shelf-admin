@@ -238,12 +238,19 @@ export default function CartDetail() {
                                 </Grid>
                             </>
                         }
+
                         {
                             (cart.items == null || cart.items.length === 0) &&
-                            <div className="m-0 py-3 px-5 text-end">
-                                Chưa có mặt hàng nào trong giỏ
-                            </div>
+                            <Grid container justifyContent={"center"} p={3}>
+                                <Stack spacing={3}>
+                                    <img src='https://bizweb.dktcdn.net/100/377/398/themes/755909/assets/empty_cart.png?1669026383948' alt='cart empty' />
+                                    <Typography variant='body1' color={"dimgray"} align='center'>
+                                        Không có sản phẩm nào trong giỏ hàng.
+                                    </Typography>
+                                </Stack>
+                            </Grid>
                         }
+
                     </Box>
 
                 </Paper>

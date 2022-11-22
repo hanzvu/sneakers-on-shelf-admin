@@ -39,8 +39,7 @@ export default function Router() {
               <DashboardLayout />
             </ProtectedRoute>,
           children: [
-            { path: '', element: <Statistical /> },
-            { path: 'app', element: <DashboardApp /> },
+            { path: 'statistic', element: <Statistical /> },
             { path: 'user', element: <User /> },
             {
               path: 'orders',

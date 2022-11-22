@@ -313,15 +313,20 @@ export default function OrderDetail() {
                 <Box p={{ xs: 1, md: 3 }}>
                     <Box>
                         {data.items.map(item => (<OrderItem key={item.id} orderItem={item} component={
-                            <Stack direction={"row"} spacing={2}>
-                                <Button variant="outlined" onClick={() => { setData({ ...data, changingProductQuantity: item }) }}>Cập Nhật</Button>
-                                <Button variant="outlined" color="error" onClick={() => { setData({ ...data, deletingOrderItem: item }) }}>Hủy</Button>
-                            </Stack>
+                            data.orderStatus.name === 'PENDING' || data.orderStatus.name === 'CONFIRMED' ?
+                                <Stack direction={"row"} spacing={2}>
+                                    <Button variant="outlined" onClick={() => { setData({ ...data, changingProductQuantity: item }) }}>Cập Nhật</Button>
+                                    <Button variant="outlined" color="error" onClick={() => { setData({ ...data, deletingOrderItem: item }) }}>Hủy</Button>
+                                </Stack>
+                                : null
                         } />))}
                     </Box>
                     <Grid container spacing={1} pt={3} justifyContent={"space-between"}>
                         <Grid item md={4} xs={12}>
-                            <ProductSeletor handleSelectProductDetail={handleSelectProductDetail} />
+                            {
+                                (data.orderStatus.name === 'PENDING' || data.orderStatus.name === 'CONFIRMED') &&
+                                <ProductSeletor handleSelectProductDetail={handleSelectProductDetail} />
+                            }
                         </Grid>
                         <Grid item md={4} xs={12}>
                             <Stack spacing={1}>

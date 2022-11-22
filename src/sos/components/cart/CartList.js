@@ -78,6 +78,10 @@ export default function CartList() {
         });
     }
 
+    const handleShowCartDetail = id => {
+        navigate(`/dashboard/carts/${id}`);
+    }
+
     return (<>
         {
             data &&
@@ -121,9 +125,15 @@ export default function CartList() {
                                     data.content && data.content.map(cart => (
                                         <TableRow
                                             hover
+                                            sx={{
+                                                "&:hover": {
+                                                    backgroundColor: "#D5D5D5 !important"
+                                                }
+                                            }}
                                             key={cart.id}
                                             tabIndex={-1}
-                                            role="checkbox">
+                                            role="checkbox"
+                                            onClick={() => { handleShowCartDetail(cart.id) }}>
                                             <TableCell align="center">
                                                 <Typography variant="body2">
                                                     {cart.id}

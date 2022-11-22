@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
     Button,
     Typography,
@@ -26,6 +26,8 @@ import CollectionSorter from "../common/CollectionSorter";
 
 export default function TransactionList() {
 
+    const navigate = useNavigate();
+
     const [data, setData] = useState();
 
     const [query, setQuery] = useState('');
@@ -49,6 +51,10 @@ export default function TransactionList() {
     const handleRefresh = () => {
         setQuery('');
         setSearchParams({});
+    }
+
+    const handleShowOrderDetail = id => {
+        navigate(`/dashboard/orders/${id}`);
     }
 
     return (<>
@@ -128,16 +134,24 @@ export default function TransactionList() {
                                     data.content && data.content.map(transaction => (
                                         <TableRow
                                             hover
+                                            sx={{
+                                                "&:hover": {
+                                                    backgroundColor: "#D5D5D5 !important"
+                                                }
+                                            }}
                                             key={transaction.id}
                                             tabIndex={-1}
-                                            role="checkbox">
+                                            role="checkbox"
+                                            onClick={() => { handleShowOrderDetail(transaction.orderId) }}>
                                             <TableCell align="center">
                                                 <Typography variant="body2">
                                                     {transaction.id}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Link to={`/dashboard/orders/${transaction.orderId}`}>{transaction.orderId}</Link>
+                                                <Typography variant="subtitle2" color="grey">
+                                                    {transaction.orderId}
+                                                </Typography>
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Typography variant="body2" color={"crimson"}>

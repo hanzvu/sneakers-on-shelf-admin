@@ -81,6 +81,10 @@ export default function OrderList() {
         });
     }
 
+    const handleShowOrderDetail = id => {
+        navigate(`/dashboard/orders/${id}`);
+    }
+
     return (<>
         {
             data &&
@@ -128,11 +132,19 @@ export default function OrderList() {
                                     data.content && data.content.map(order => (
                                         <TableRow
                                             hover
+                                            sx={{
+                                                "&:hover": {
+                                                    backgroundColor: "#D5D5D5 !important"
+                                                }
+                                            }}
                                             key={order.id}
                                             tabIndex={-1}
-                                            role="checkbox">
+                                            role="checkbox"
+                                            onClick={() => { handleShowOrderDetail(order.id) }}>
                                             <TableCell align="center">
-                                                <Link to={`/dashboard/orders/${order.id}`}>{order.id}</Link>
+                                                <Typography variant="subtitle2" color="grey">
+                                                    {order.id}
+                                                </Typography>
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Chip label={order.orderStatus.description} color={order.orderStatus.color} />
