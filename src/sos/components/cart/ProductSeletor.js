@@ -61,7 +61,7 @@ export default function ProductSeletor({ handleSelectProductDetail }) {
 
     return (
         <>
-            <Button variant="outlined" size="large" onClick={handleClickOpen}>
+            <Button variant="contained" onClick={handleClickOpen}>
                 THÊM SẢN PHẨM
             </Button>
             <Dialog

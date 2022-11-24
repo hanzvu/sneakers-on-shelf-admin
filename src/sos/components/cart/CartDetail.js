@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Box, Button, Chip, Collapse, Container, FormControlLabel, Grid, ListItemIcon, Paper, Stack, styled, Switch, TextField, Typography } from "@mui/material";
 import { fCurrency } from "../../../utils/formatNumber";
 import CartItem from "./CartItem";
@@ -192,7 +192,8 @@ export default function CartDetail() {
 
     return (<>
         <Container disableGutters>
-            <Stack direction={"row"} justifyContent={"flex-end"}>
+            <Stack direction={"row"} justifyContent={"space-between"}>
+                <Link to={"/dashboard/carts"}><Button variant="contained">{'DANH SÁCH'}</Button></Link>
                 <ProductSeletor handleSelectProductDetail={handleSelectProductDetail} />
             </Stack>
 

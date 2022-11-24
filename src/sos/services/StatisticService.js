@@ -6,8 +6,8 @@ export const getOrderStatistic = async () => {
     return response.data;
 }
 
-export const getOrderChartStatisticData = async () => {
-    const response = await axios.get(`${BASE_API}/admin/v1/statistics/order-chart-datas`);
+export const getOrderChartStatisticData = async (data) => {
+    const response = await axios.post(`${BASE_API}/admin/v1/statistics/order-chart-datas`, data);
     return response.data;
 }
 
