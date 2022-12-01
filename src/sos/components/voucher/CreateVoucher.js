@@ -55,7 +55,6 @@ export default function CreateVoucher() {
         }));
 
     };
-    console.log(voucherFormInput);
 
     const handleSubmitVoucherOnClick = () => {
         if (voucherFormInput.code === '') {
@@ -103,6 +102,7 @@ export default function CreateVoucher() {
             }
         })
     }
+    
     const handleBackOnClick = e => {
         navigate(`/dashboard/vouchers`);
     }

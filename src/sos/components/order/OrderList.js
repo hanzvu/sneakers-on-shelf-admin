@@ -18,14 +18,16 @@ import {
     Grid,
     Box,
 } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import Scrollbar from "../../../components/Scrollbar";
 import Iconify from "../../../components/Iconify";
 import { getAllOrder } from "../../services/OrderService";
 import { fCurrency } from "../../../utils/formatNumber";
 import { showSnackbar } from "../../services/NotificationService";
-import OrderListFilter from "./OrderListFilter";
 import { createCart } from "../../services/CartService";
+import CollectionSorter from "../common/CollectionSorter";
 // material
 
 export default function OrderList() {
@@ -42,7 +44,6 @@ export default function OrderList() {
         getAllOrder(Object.fromEntries(searchParams.entries())).then(data => {
             setData(data);
         });
-
     }, [searchParams]);
 
     const handleSubmitQuery = (e) => {
@@ -95,19 +96,85 @@ export default function OrderList() {
                             <Stack direction={"row"} spacing={1}>
                                 <TextField id="outlined-basic" label="Tìm Đơn Hàng" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
                                 <Button variant="contained" color="primary" type="submit">Tìm Kiếm</Button>
-                                {
-                                    searchParams.get('query') &&
-                                    <Button variant="contained" color="warning" type="button" onClick={handleRefresh}>Làm Mới</Button>
-                                }
+                                <Button variant="contained" color="warning" type="button" onClick={handleRefresh}>Làm Mới</Button>
                             </Stack>
                         </Grid>
                         <Grid item xs={5} container justifyContent={"flex-end"}>
                             <Box pr={3}>
-                                <OrderListFilter value={searchParams.get('status')} handleStatusFilter={handleStatusFilter} />
+                                <Button variant="contained" onClick={handleCreateCart} startIcon={<Iconify icon="eva:plus-fill" />}>
+                                    Tạo đơn hàng
+                                </Button>
                             </Box>
-                            <Button variant="contained" onClick={handleCreateCart} startIcon={<Iconify icon="eva:plus-fill" />}>
-                                Tạo đơn hàng
-                            </Button>
+                        </Grid>
+                        <Grid item container justifyContent={"space-between"}>
+                            <Grid item xs={4}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <Stack spacing={3} direction="row">
+                                        <DatePicker
+                                            label="Từ ngày"
+                                            inputFormat='DD/MM/YYYY'
+                                            maxDate={searchParams.get('to-date') ? new Date(searchParams.get('to-date')) : new Date()}
+                                            value={searchParams.get('from-date') ? new Date(searchParams.get('from-date')) : null}
+                                            onChange={(newValue) => {
+                                                setSearchParams({
+                                                    ...Object.fromEntries(searchParams.entries()),
+                                                    'from-date': new Date(newValue.$d.getTime() - (newValue.$d.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0]
+                                                })
+                                            }}
+                                            renderInput={(params) => <TextField size="small" {...params} />}
+                                        />
+                                        <DatePicker
+                                            label="Đến ngày"
+                                            inputFormat='DD/MM/YYYY'
+                                            maxDate={new Date()}
+                                            minDate={searchParams.get('from-date') ? new Date(searchParams.get('from-date')) : null}
+                                            value={searchParams.get('to-date') ? new Date(searchParams.get('to-date')) : null}
+                                            onChange={(newValue) => {
+                                                setSearchParams({
+                                                    ...Object.fromEntries(searchParams.entries()),
+                                                    'to-date': new Date(newValue.$d.getTime() - (newValue.$d.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0]
+                                                })
+                                            }}
+                                            renderInput={(params) => <TextField size="small" {...params} />}
+                                        />
+                                    </Stack>
+                                </LocalizationProvider>
+                            </Grid>
+                            <Stack spacing={3} direction="row">
+                                <CollectionSorter value={searchParams.get('status')}
+                                    title="Trạng thái"
+                                    defaultValue="Tất cả"
+                                    handleChange={status => {
+                                        setSearchParams({
+                                            ...Object.fromEntries(searchParams.entries()),
+                                            status
+                                        })
+                                    }}
+                                    options={ORDER_STATUS_OPTIONS}
+                                />
+                                <CollectionSorter value={searchParams.get('method')}
+                                    title="Loại đơn"
+                                    defaultValue="Tất cả"
+                                    handleChange={method => {
+                                        setSearchParams({
+                                            ...Object.fromEntries(searchParams.entries()),
+                                            method
+                                        })
+                                    }}
+                                    options={SALE_METHOD_OPTIONS}
+                                />
+                                <CollectionSorter value={searchParams.get('size')}
+                                    title="Hiển thị"
+                                    defaultValue="10"
+                                    handleChange={size => {
+                                        setSearchParams({
+                                            ...Object.fromEntries(searchParams.entries()),
+                                            size
+                                        })
+                                    }}
+                                    options={SIZE_OPTIONS}
+                                />
+                            </Stack>
                         </Grid>
                     </Grid>
                 </form>
@@ -117,13 +184,13 @@ export default function OrderList() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center">Mã Đơn Hàng</TableCell>
-                                    <TableCell align="center">Trạng Thái Đơn</TableCell>
-                                    <TableCell align="center">Loại Đơn Hàng</TableCell>
-                                    <TableCell align="center">Tên Khách Hàng</TableCell>
-                                    <TableCell align="center">Số Điện Thoại</TableCell>
                                     <TableCell align="center" width={"9%"}>Tổng Số Sản Phẩm</TableCell>
                                     <TableCell align="center">Tổng Số Tiền</TableCell>
+                                    <TableCell align="center">Tên Khách Hàng</TableCell>
+                                    <TableCell align="center">Số Điện Thoại</TableCell>
                                     <TableCell align="center" width={"10%"}>Ngày Tạo</TableCell>
+                                    <TableCell align="center">Loại Đơn Hàng</TableCell>
+                                    <TableCell align="center">Trạng Thái Đơn</TableCell>
                                 </TableRow>
                             </TableHead>
 
@@ -146,11 +213,11 @@ export default function OrderList() {
                                                     {order.id}
                                                 </Typography>
                                             </TableCell>
+                                            <TableCell align="center">{order.productCount}</TableCell>
                                             <TableCell align="center">
-                                                <Chip label={order.orderStatus.description} color={order.orderStatus.color} />
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                <Chip label={order.saleMethod.description} color={order.saleMethod.color} />
+                                                <Typography color={"crimson"} variant={"body2"}>
+                                                    {fCurrency(order.total)}
+                                                </Typography>
                                             </TableCell>
                                             <TableCell align="center">
                                                 {
@@ -165,16 +232,16 @@ export default function OrderList() {
                                                     {order.phone ? order.phone : ''}
                                                 </Typography>
                                             </TableCell>
-                                            <TableCell align="center">{order.productCount}</TableCell>
-                                            <TableCell align="center">
-                                                <Typography color={"crimson"} variant={"body2"}>
-                                                    {fCurrency(order.total)}
-                                                </Typography>
-                                            </TableCell>
                                             <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
                                                     {new Date(order.createDate).toLocaleString()}
                                                 </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Chip label={order.saleMethod.description} color={order.saleMethod.color} />
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Chip label={order.orderStatus.description} color={order.orderStatus.color} />
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -212,4 +279,26 @@ export default function OrderList() {
             </Card>
         }
     </>)
+}
+
+const ORDER_STATUS_OPTIONS = {
+    '': { value: '', label: 'Tất Cả' },
+    'PENDING': { value: 'PENDING', label: 'Đang chờ xác nhận' },
+    'CONFIRMED': { value: 'CONFIRMED', label: 'Đã xác nhận' },
+    'SHIPPING': { value: 'SHIPPING', label: 'Đang vận chuyển' },
+    'CANCELLED': { value: 'CANCELLED', label: 'Đã hủy' },
+    'APPROVED': { value: 'APPROVED', label: 'Đã hoàn thành' },
+}
+
+const SALE_METHOD_OPTIONS = {
+    '': { value: '', label: 'Tất Cả' },
+    'DELIVERY': { value: 'DELIVERY', label: 'Giao hàng' },
+    'RETAIL': { value: 'RETAIL', label: 'Tại quầy' },
+}
+
+const SIZE_OPTIONS = {
+    '': { value: '', label: '10' },
+    25: { value: 25, label: '25' },
+    50: { value: 50, label: '50' },
+    100: { value: 100, label: '100' },
 }

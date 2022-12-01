@@ -23,6 +23,12 @@ import VoucherManagementLayout from './sos/layouts/VoucherManagementLayout';
 import CreateVoucher from './sos/components/voucher/CreateVoucher';
 import TransactionManagementLayout from './sos/layouts/TransactionManagementLayout';
 import TransactionList from './sos/components/transaction/TransactionList';
+import AccountManagementLayout from './sos/layouts/AccountManagementLayout';
+import AccountList from './sos/components/account/AccountList';
+import AccountDetail from './sos/components/account/AccountDetail';
+import ProductManagementLayout from './sos/layouts/ProductManagementLayout';
+import ProductList from './sos/components/product/ProductList';
+import ProductDetail from './sos/components/product/ProductDetail';
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +37,7 @@ export default function Router() {
     {
       path: '',
       children: [
-        { path: '', element: <Navigate to="/dashboard/statistic" replace /> },
+        { path: '', element: <Navigate to="/dashboard/orders?status=PENDING" replace /> },
         {
           path: '/dashboard',
           element:
@@ -39,9 +45,16 @@ export default function Router() {
               <DashboardLayout />
             </ProtectedRoute>,
           children: [
-            { path: '', element: <Navigate to="/dashboard/statistic" replace /> },
+            { path: '', element: <Navigate to="/dashboard/orders?status=PENDING" replace /> },
             { path: 'statistic', element: <Statistical /> },
-            { path: 'user', element: <User /> },
+            {
+              path: 'accounts',
+              element: <AccountManagementLayout />,
+              children: [
+                { path: '', element: <AccountList /> },
+                { path: ':id', element: <AccountDetail /> },
+              ]
+            },
             {
               path: 'orders',
               element: <OrderManagementLayout />,
@@ -73,7 +86,14 @@ export default function Router() {
                 { path: 'create', element: <CreateVoucher /> },
               ]
             },
-            { path: 'products', element: <Products /> },
+            {
+              path: 'products',
+              element: <ProductManagementLayout />,
+              children: [
+                { path: '', element: <ProductList /> },
+                { path: ':id', element: <ProductDetail /> },
+              ]
+            },
             { path: 'blog', element: <Blog /> },
           ],
         },

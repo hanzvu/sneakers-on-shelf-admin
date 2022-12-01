@@ -13,6 +13,8 @@ export default function ProductDetailSeletor({ product, setProduct, handleSelect
         return;
     }
 
+    console.log(product);
+
     return (
         <>
             <Dialog
@@ -26,7 +28,7 @@ export default function ProductDetailSeletor({ product, setProduct, handleSelect
                 <DialogContent sx={{ zIndex: 'modal' }}>
                     <Grid container item spacing={5} pt={3}>
                         <Grid container item md={6}>
-                            <img alt="la" src={product.productImage} />
+                            <img alt="la" src={product.productImage.image} />
                         </Grid>
                         <Grid item md={6}>
                             <Typography variant='h4'>
@@ -41,7 +43,7 @@ export default function ProductDetailSeletor({ product, setProduct, handleSelect
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Typography variant="subtitle2">
-                                            {product.brand}
+                                            {product.brand.name}
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -53,7 +55,7 @@ export default function ProductDetailSeletor({ product, setProduct, handleSelect
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Typography variant="subtitle2">
-                                            {product.category}
+                                            {product.category.name}
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -65,7 +67,7 @@ export default function ProductDetailSeletor({ product, setProduct, handleSelect
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Typography variant="subtitle2">
-                                            {product.productGender}
+                                            {product.productGender.description}
                                         </Typography>
                                     </Grid>
                                 </Grid>

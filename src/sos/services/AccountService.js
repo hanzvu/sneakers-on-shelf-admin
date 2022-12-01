@@ -7,7 +7,7 @@ import { getAuthenticatedUser } from "./AuthenticationService";
 export const fetchAccount = async () => {
     const auth = getAuthenticatedUser()
     if (auth != null) {
-        const response = await axios.get(`${BASE_API}/api/v1/accounts/${auth.id}`);
+        const response = await axios.get(`${BASE_API}/admin/v1/accounts/${auth.id}`);
         store.dispatch(setAccount(response.data));
     }
 }
@@ -49,4 +49,33 @@ export const getAccountDTOById = async (id) => {
         return obj
     }, {});
     return rs;
+}
+
+export const getPageAccount = async (params) => {
+    const response = await axios.get(`${BASE_API}/admin/v1/accounts`, { params });
+    return response.data;
+}
+
+export const createAccount = async (data) => {
+    const response = await axios.post(`${BASE_API}/admin/v1/accounts`, data);
+    return response.data;
+}
+
+export const updateAccountStatus = async (id, data) => {
+    const response = await axios.put(`${BASE_API}/admin/v1/accounts/${id}/account-status`, data, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response;
+}
+
+export const updateAccountInfo = async (id, data) => {
+    const response = await axios.put(`${BASE_API}/admin/v1/accounts/${id}/info`, data);
+    return response;
+}
+
+export const resetAccountPassword = async (id) => {
+    const response = await axios.put(`${BASE_API}/admin/v1/accounts/${id}/reset-password`);
+    return response.data;
 }

@@ -111,11 +111,10 @@ export default function CartList() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center">ID</TableCell>
-                                    <TableCell align="center">Trạng Thái</TableCell>
                                     <TableCell align="center">Số Sản Phẩm</TableCell>
                                     <TableCell align="center">Tổng Số Tiền</TableCell>
                                     <TableCell align="center">Ngày Tạo</TableCell>
-                                    <TableCell align="center">Ngày Cập Nhật</TableCell>
+                                    <TableCell align="center">Trạng Thái</TableCell>
                                     <TableCell align="center">Thao Tác</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -125,24 +124,15 @@ export default function CartList() {
                                     data.content && data.content.map(cart => (
                                         <TableRow
                                             hover
-                                            sx={{
-                                                "&:hover": {
-                                                    backgroundColor: "#D5D5D5 !important"
-                                                }
-                                            }}
                                             key={cart.id}
                                             tabIndex={-1}
-                                            role="checkbox"
-                                            onClick={() => { handleShowCartDetail(cart.id) }}>
+                                            role="checkbox">
                                             <TableCell align="center">
                                                 <Typography variant="body2">
                                                     {cart.id}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Chip label={cart.cartStatus.description} color={cart.cartStatus.color} />
-                                            </TableCell>
-                                            <TableCell align="center" width={"9%"}>
                                                 <Typography variant="body2">
                                                     {cart.productCount}
                                                 </Typography>
@@ -158,9 +148,7 @@ export default function CartList() {
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Typography variant="body2" flexWrap>
-                                                    {new Date(cart.updateDate).toLocaleString()}
-                                                </Typography>
+                                                <Chip label={cart.cartStatus.description} color={cart.cartStatus.color} />
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Stack direction={"row"} spacing={2} justifyContent="center">

@@ -13,7 +13,7 @@ const navConfig = [
   },
   {
     title: 'Đơn Hàng',
-    path: '/dashboard/orders?status=PENDING',
+    path: '/dashboard/orders',
     icon: getIcon('fa:cart-arrow-down'),
   },
   {
@@ -27,19 +27,19 @@ const navConfig = [
     icon: getIcon('fa6-solid:money-bill-transfer'),
   },
   {
-    title: 'Mã Giảm Giá',
-    path: '/dashboard/vouchers',
-    icon: getIcon('mdi:voucher'),
-  },
-  {
     title: 'Tài Khoản',
-    path: '/dashboard/user',
+    path: '/dashboard/accounts',
     icon: getIcon('eva:people-fill'),
   },
   {
     title: 'Sản Phẩm',
     path: '/dashboard/products',
     icon: getIcon('eva:shopping-bag-fill'),
+  },
+  {
+    title: 'Mã Giảm Giá',
+    path: '/dashboard/vouchers',
+    icon: getIcon('mdi:voucher'),
   },
 ];
 

@@ -106,6 +106,7 @@ export default function OrderChart({ dates, setDates, ...other }) {
                         label="Từ ngày"
                         inputFormat='DD/MM/YYYY'
                         value={dates.fromDate}
+                        maxDate={dates.toDate}
                         onChange={(newValue) => {
                             setDates({ ...dates, fromDate: newValue.$d });
                         }}
@@ -115,6 +116,8 @@ export default function OrderChart({ dates, setDates, ...other }) {
                         label="Đến ngày"
                         inputFormat='DD/MM/YYYY'
                         value={dates.toDate}
+                        minDate={dates.fromDate}
+                        maxDate={new Date()}
                         onChange={(newValue) => {
                             setDates({ ...dates, toDate: newValue.$d });
                         }}

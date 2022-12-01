@@ -16,6 +16,7 @@ import {
     Chip,
     TextField,
     Grid,
+    Avatar,
 } from "@mui/material";
 
 import Scrollbar from "../../../components/Scrollbar";
@@ -23,8 +24,10 @@ import Iconify from "../../../components/Iconify";
 import { fCurrency } from "../../../utils/formatNumber";
 import { findTransactions } from "../../services/TransactionService";
 import CollectionSorter from "../common/CollectionSorter";
+import { getPageAccount, updateAccountStatus } from "../../services/AccountService";
+import { showSnackbar } from "../../services/NotificationService";
 
-export default function TransactionList() {
+export default function AccountList() {
 
     const navigate = useNavigate();
 
@@ -35,10 +38,14 @@ export default function TransactionList() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
-        findTransactions(Object.fromEntries(searchParams.entries())).then(data => {
-            setData(data);
-        });
+        fetchData();
     }, [searchParams])
+
+    const fetchData = () => {
+        getPageAccount(Object.fromEntries(searchParams.entries())).then(data => {
+            setData(data);
+        })
+    }
 
     const handleSubmitQuery = (e) => {
         e.preventDefault();
@@ -53,8 +60,12 @@ export default function TransactionList() {
         setSearchParams({});
     }
 
-    const handleShowOrderDetail = id => {
-        navigate(`/dashboard/orders/${id}`);
+    const handleSetAccountStatus = (id, accountStatus) => {
+        updateAccountStatus(id, accountStatus).then(() => {
+            fetchData();
+        }).catch(() => {
+            showSnackbar('Có lỗi xảy ra, hãy thử lại sau.', 'error');
+        })
     }
 
     return (<>
@@ -72,41 +83,22 @@ export default function TransactionList() {
                         </Grid>
                         <Grid item md={6}>
                             <Stack direction={"row"} justifyContent={"flex-end"} spacing={2}>
-                                <CollectionSorter value={searchParams.get('transaction-type')}
-                                    title="Loại"
+                                <CollectionSorter value={searchParams.get('status')}
+                                    title="Trạng thái"
                                     defaultValue="Tất cả"
-                                    handleChange={transactionType => {
+                                    handleChange={status => {
                                         setSearchParams({
                                             ...Object.fromEntries(searchParams.entries()),
-                                            'transaction-type': transactionType
+                                            status
                                         })
                                     }}
-                                    options={TRANSACTION_TYPE_OPTIONS}
+                                    options={ACCOUNT_STATUS_OPTIONS}
                                 />
-
-                                <CollectionSorter value={searchParams.get('payment-method')}
-                                    title="Phương Thức"
-                                    defaultValue="Tất cả"
-                                    handleChange={paymentMethod => {
-                                        setSearchParams({
-                                            ...Object.fromEntries(searchParams.entries()),
-                                            'payment-method': paymentMethod
-                                        })
-                                    }}
-                                    options={PAYMENT_METHOD_OPTIONS}
-                                />
-
-                                <CollectionSorter value={searchParams.get('sort')}
-                                    title="Sắp Xếp"
-                                    defaultValue="Mới nhất"
-                                    handleChange={sort => {
-                                        setSearchParams({
-                                            ...Object.fromEntries(searchParams.entries()),
-                                            'sort': sort
-                                        })
-                                    }}
-                                    options={SORT_BY_OPTIONS}
-                                />
+                                <Link to={"/dashboard/accounts/new"} className="text-decoration-none">
+                                    <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+                                        Tạo tài khoản
+                                    </Button>
+                                </Link>
                             </Stack>
                         </Grid>
                     </Grid>
@@ -117,59 +109,69 @@ export default function TransactionList() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center">ID</TableCell>
-                                    <TableCell align="center">Mã Đơn Hàng</TableCell>
-                                    <TableCell align="center">Số Tiền</TableCell>
-                                    <TableCell align="center">Ngày Thanh Toán</TableCell>
-                                    <TableCell align="center">Loại Thanh Toán</TableCell>
-                                    <TableCell align="center">Phương Thức Thanh Toán</TableCell>
-                                    <TableCell align="center">Người Xác Nhận</TableCell>
+                                    <TableCell align="center">Ảnh</TableCell>
+                                    <TableCell align="center">Tên Tài Khoản</TableCell>
+                                    <TableCell align="center">Email</TableCell>
+                                    <TableCell align="center">Họ Và Tên</TableCell>
+                                    <TableCell align="center" width={"13%"}>Ngày Tạo</TableCell>
+                                    <TableCell align="center">Trạng Thái</TableCell>
+                                    <TableCell align="center" colSpan={2}>Thao Tác</TableCell>
                                 </TableRow>
                             </TableHead>
 
                             <TableBody>
                                 {
-                                    data.content && data.content.map(transaction => (
+                                    data.content && data.content.map(account => (
                                         <TableRow
                                             hover
-                                            sx={{
-                                                "&:hover": {
-                                                    backgroundColor: "#D5D5D5 !important"
-                                                }
-                                            }}
-                                            key={transaction.id}
+                                            key={account.id}
                                             tabIndex={-1}
-                                            role="checkbox"
-                                            onClick={() => { handleShowOrderDetail(transaction.orderId) }}>
+                                            role="checkbox">
                                             <TableCell align="center">
                                                 <Typography variant="body2">
-                                                    {transaction.id}
+                                                    {account.id}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Typography variant="subtitle2" color="grey">
-                                                    {transaction.orderId}
+                                                <Avatar src={account.picture} alt="photoURL" imgProps={{ referrerPolicy: "no-referrer" }} />
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Typography variant="body2">
+                                                    {account.username}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Typography variant="body2" color={"crimson"}>
-                                                    {fCurrency(transaction.amount)}
+                                                <Typography variant="body2">
+                                                    {account.email}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Typography variant="body2">
+                                                    {account.fullname}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
-                                                    {new Date(transaction.createDate).toLocaleString()}
+                                                    {new Date(account.createDate).toLocaleString()}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Chip label={transaction.transactionType.description} color={transaction.transactionType.color} />
+                                                <Chip label={account.accountStatus.description} color={account.accountStatus.color} />
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Chip label={transaction.paymentMethod.description} color={transaction.paymentMethod.color} />
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                <Typography variant="body2" flexWrap>
-                                                    {transaction.staff}
-                                                </Typography>
+                                                <Stack direction={"row"} spacing={1}>
+                                                    <Link to={`/dashboard/accounts/${account.id}`} className="text-decoration-none">
+                                                        <Button variant="outlined">Chi Tiết</Button>
+                                                    </Link>
+                                                    {
+                                                        account.accountStatus.name === 'ACTIVE' &&
+                                                        <Button variant="outlined" color="error" onClick={() => { handleSetAccountStatus(account.id, 'INACTIVE') }}>Hủy Kích Hoạt</Button>
+                                                    }
+                                                    {
+                                                        account.accountStatus.name !== 'ACTIVE' &&
+                                                        <Button variant="outlined" color="warning" onClick={() => { handleSetAccountStatus(account.id, 'ACTIVE') }}>Tái Kích Hoạt</Button>
+                                                    }
+                                                </Stack>
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -198,7 +200,7 @@ export default function TransactionList() {
                         renderItem={(item) => (
                             <PaginationItem
                                 component={Link}
-                                to={`/dashboard/transactions${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
+                                to={`/dashboard/accounts${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
                                 {...item}
                             />
                         )}
@@ -209,20 +211,8 @@ export default function TransactionList() {
     </>);
 }
 
-const SORT_BY_OPTIONS = {
-    'date_desc': { value: 'date_desc', label: 'Mới nhất' },
-    'amount_asc': { value: 'amount_asc', label: 'Số tiền tăng dần' },
-    'amount_desc': { value: 'amount_desc', label: 'Số tiền giảm dần' },
-};
-
-const TRANSACTION_TYPE_OPTIONS = {
+const ACCOUNT_STATUS_OPTIONS = {
     '': { value: '', label: 'Tất cả' },
-    'PAYMENT': { value: 'PAYMENT', label: 'Thanh toán' },
-    'REVERSE': { value: 'REVERSE', label: 'Hoàn tiền' },
-}
-
-const PAYMENT_METHOD_OPTIONS = {
-    '': { value: '', label: 'Tất cả' },
-    'CASH': { value: 'CASH', label: 'Tiền mặt' },
-    'BANKING': { value: 'BANKING', label: 'Chuyển khoản' },
+    'INACTIVE': { value: 'INACTIVE', label: 'Hủy kích hoạt' },
+    'ACTIVE': { value: 'ACTIVE', label: 'Kích hoạt' },
 }

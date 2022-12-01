@@ -27,7 +27,7 @@ export default function CartIncrementer({ quantity, onIncrementQuantity, onDecre
                 <Iconify icon={'eva:minus-fill'} width={14} height={14} />
             </IconButton>
 
-            <TextField variant="standard" value={value} onChange={e => setValue(e.target.value)} onBlur={e => onBlurHandler(value)} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 1, style: { textAlign: 'center' } }} sx={{ width: 40, textAlign: 'center' }} />
+            <TextField type={"number"} variant="standard" value={value} onChange={e => setValue(e.target.value)} onBlur={e => onBlurHandler(value)} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 1, style: { textAlign: 'center' } }} sx={{ width: 40, textAlign: 'center' }} />
 
             <IconButton size="small" color="inherit" onClick={onIncrementQuantity}>
                 <Iconify icon={'eva:plus-fill'} width={14} height={14} />

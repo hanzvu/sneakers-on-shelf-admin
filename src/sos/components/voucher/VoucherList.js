@@ -24,7 +24,7 @@ import Iconify from "../../../components/Iconify";
 import { fCurrency } from "../../../utils/formatNumber";
 import { showSnackbar } from "../../services/NotificationService";
 import { findVouchers, invalidVoucher } from "../../services/VoucherService";
-import VoucherListFilter from "./OrderListFilter";
+import CollectionSorter from "../common/CollectionSorter";
 // material
 
 export default function VoucherList() {
@@ -87,6 +87,17 @@ export default function VoucherList() {
         setSearchParams({})
     }
 
+    const getVoucherColor = (fromDate, toDate) => {
+        const now = new Date();
+        if (now > toDate) {
+            return 'error';
+        }
+        if (now > fromDate) {
+            return 'success'
+        }
+        return 'primary';
+    }
+
     return (<>
         {
             data &&
@@ -97,19 +108,50 @@ export default function VoucherList() {
                             <Stack direction={"row"} spacing={1}>
                                 <TextField id="outlined-basic" label="Tìm Đơn Hàng" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
                                 <Button variant="contained" color="primary" type="submit">Tìm Kiếm</Button>
-                                {
-                                    searchParams.get('query') &&
-                                    <Button variant="contained" color="warning" type="button" onClick={handleRefresh}>Làm Mới</Button>
-                                }
+                                <Button variant="contained" color="warning" type="button" onClick={handleRefresh}>Làm Mới</Button>
                             </Stack>
                         </Grid>
                         <Grid item xs={5} container justifyContent={"flex-end"}>
-                            <Box pr={3}>
-                                <VoucherListFilter value={searchParams.get('status')} handleStatusFilter={handleStatusFilter} />
-                            </Box>
                             <Button variant="contained" onClick={handleCreateVoucher} startIcon={<Iconify icon="eva:plus-fill" />}>
                                 Tạo mã giảm giá
                             </Button>
+                        </Grid>
+                        <Grid item container justifyContent={"flex-end"}>
+                            <Stack direction={"row"} spacing={3}>
+                                <CollectionSorter value={searchParams.get('status')}
+                                    title="Trạng thái"
+                                    defaultValue="Tất cả"
+                                    handleChange={status => {
+                                        setSearchParams({
+                                            ...Object.fromEntries(searchParams.entries()),
+                                            status
+                                        })
+                                    }}
+                                    options={STATUS_OPTIONS}
+                                />
+                                <CollectionSorter value={searchParams.get('access')}
+                                    title="Quyền"
+                                    defaultValue="Tất cả"
+                                    handleChange={access => {
+                                        setSearchParams({
+                                            ...Object.fromEntries(searchParams.entries()),
+                                            access
+                                        })
+                                    }}
+                                    options={ACCESS_OPTIONS}
+                                />
+                                <CollectionSorter value={searchParams.get('type')}
+                                    title="Loại"
+                                    defaultValue="Tất cả"
+                                    handleChange={type => {
+                                        setSearchParams({
+                                            ...Object.fromEntries(searchParams.entries()),
+                                            type
+                                        })
+                                    }}
+                                    options={TYPE_OPTIONS}
+                                />
+                            </Stack>
                         </Grid>
                     </Grid>
                 </form>
@@ -118,15 +160,15 @@ export default function VoucherList() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">Mã</TableCell>
-                                    <TableCell align="center">Giá Trị</TableCell>
-                                    <TableCell align="center">Giá Trị Tối Đa</TableCell>
-                                    <TableCell align="center">Cho Đơn Tối Thiểu</TableCell>
-                                    <TableCell align="center">Số Lượng</TableCell>
+                                    <TableCell align="center" width={"5%"}>Mã</TableCell>
+                                    <TableCell align="center" width={"10%"}>Giá Trị</TableCell>
+                                    <TableCell align="center" width={"10%"}>Giá Trị Tối Đa</TableCell>
+                                    <TableCell align="center" width={"10%"}>Cho Đơn Tối Thiểu</TableCell>
+                                    <TableCell align="center" width={"5%"}>Số Lượng</TableCell>
                                     <TableCell align="center">Quyền</TableCell>
                                     <TableCell align="center">Trạng Thái</TableCell>
-                                    <TableCell align="center">Thời Gian</TableCell>
-                                    <TableCell align="center">Thao Tác</TableCell>
+                                    <TableCell align="center" width={"14%"}>Thời Gian</TableCell>
+                                    <TableCell align="center" width={"15%"}>Thao Tác</TableCell>
                                 </TableRow>
                             </TableHead>
 
@@ -134,12 +176,12 @@ export default function VoucherList() {
                                 {
                                     data.content && data.content.map(voucher => (
                                         <TableRow hover key={voucher.id} tabIndex={-1}>
-                                            <TableCell align="center" width={"5%"}>
+                                            <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
                                                     {voucher.code}
                                                 </Typography>
                                             </TableCell>
-                                            <TableCell align="center" width={"10%"}>
+                                            <TableCell align="center">
                                                 {
                                                     voucher.voucherType === 'DISCOUNT' ?
                                                         <Typography variant="body2" color={"crimson"} flexWrap>
@@ -149,17 +191,17 @@ export default function VoucherList() {
                                                 }
 
                                             </TableCell>
-                                            <TableCell align="center" width={"10%"}>
+                                            <TableCell align="center">
                                                 <Typography variant="body2" color={"crimson"} flexWrap>
                                                     {voucher.maxValue > 0 ? fCurrency(voucher.maxValue) : ''}
                                                 </Typography>
                                             </TableCell>
-                                            <TableCell align="center" width={"10%"}>
+                                            <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
                                                     {fCurrency(voucher.requiredValue)}
                                                 </Typography>
                                             </TableCell>
-                                            <TableCell align="center" width={"5%"}>
+                                            <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
                                                     {voucher.quantity}
                                                 </Typography>
@@ -171,11 +213,9 @@ export default function VoucherList() {
                                                 <Chip label={voucher.voucherStatus.description} color={voucher.voucherStatus.color} />
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Typography variant="body2" flexWrap>
-                                                    {`${new Date(voucher.startDate).toLocaleDateString()} - ${new Date(voucher.experationDate).toLocaleDateString()}`}
-                                                </Typography>
+                                                <Chip label={`${new Date(voucher.startDate).toLocaleDateString()} - ${new Date(voucher.experationDate).toLocaleDateString()}`} color={getVoucherColor(voucher.startDate, voucher.experationDate)} />
                                             </TableCell>
-                                            <TableCell align="center" width={"14%"}>
+                                            <TableCell align="center">
                                                 <Button hidden={voucher.voucherStatus.name !== "ACTIVE"} variant="outlined" color="error" onClick={() => { handleInactiveVoucher(voucher.id) }}>Hủy Kích Hoạt</Button>
                                                 {
                                                     voucher.voucherStatus.name !== "ACTIVE" &&
@@ -218,4 +258,22 @@ export default function VoucherList() {
             </Card>
         }
     </>)
+}
+
+const STATUS_OPTIONS = {
+    '': { value: '', label: 'Tất Cả' },
+    'ACTIVE': { value: 'ACTIVE', label: 'Kích hoạt' },
+    'INACTIVE': { value: 'INACTIVE', label: 'Đã hủy' },
+}
+
+const ACCESS_OPTIONS = {
+    '': { value: '', label: 'Tất Cả' },
+    'PUBLIC': { value: 'PUBLIC', label: 'Công khai' },
+    'PROTECTED': { value: 'PROTECTED', label: 'Giới hạn' },
+}
+
+const TYPE_OPTIONS = {
+    '': { value: '', label: 'Tất Cả' },
+    'DISCOUNT': { value: 'DISCOUNT', label: 'Giảm giá' },
+    'PERCENT': { value: 'PERCENT', label: 'Phần trăm' },
 }
