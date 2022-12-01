@@ -29,6 +29,7 @@ import AccountDetail from './sos/components/account/AccountDetail';
 import ProductManagementLayout from './sos/layouts/ProductManagementLayout';
 import ProductList from './sos/components/product/ProductList';
 import ProductDetail from './sos/components/product/ProductDetail';
+import GoogleFCMListener from './sos/components/fcm/GoogleFCMListener';
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +44,7 @@ export default function Router() {
           element:
             <ProtectedRoute>
               <DashboardLayout />
+              <GoogleFCMListener />
             </ProtectedRoute>,
           children: [
             { path: '', element: <Navigate to="/dashboard/orders?status=PENDING" replace /> },

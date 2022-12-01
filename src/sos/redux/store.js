@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import cartReducer from './cartSlice'
+import notificationReducer from './notificationSlice'
 import accountReducer from './accountSlice'
 import modalReducer from './modalSlice'
 import snackbarReducer from './snackbarSlice'
@@ -9,6 +10,7 @@ import ghnWardReducer from './ghnWardSlice'
 
 export default configureStore({
     reducer: {
+        notification: notificationReducer,
         cart: cartReducer,
         account: accountReducer,
         modal: modalReducer,

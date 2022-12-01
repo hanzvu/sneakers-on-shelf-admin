@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { set, sub } from 'date-fns';
 import { noCase } from 'change-case';
@@ -25,65 +27,20 @@ import { fToNow } from '../../../utils/formatTime';
 import Iconify from '../../../components/Iconify';
 import Scrollbar from '../../../components/Scrollbar';
 import MenuPopover from '../../../components/MenuPopover';
+import { markNotificationAsReadById, removeAllNotification } from '../../services/GoogleFirebaseCloudMessageService';
 
 // ----------------------------------------------------------------------
 
-const NOTIFICATIONS = [
-  {
-    id: faker.datatype.uuid(),
-    title: 'Your order is placed',
-    description: 'waiting for shipping',
-    avatar: null,
-    type: 'order_placed',
-    createdAt: set(new Date(), { hours: 10, minutes: 30 }),
-    isUnRead: true,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: faker.name.findName(),
-    description: 'answered to your comment on the Minimal',
-    avatar: '/static/mock-images/avatars/avatar_2.jpg',
-    type: 'friend_interactive',
-    createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
-    isUnRead: true,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new message',
-    description: '5 unread messages',
-    avatar: null,
-    type: 'chat_message',
-    createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new mail',
-    description: 'sent from Guido Padberg',
-    avatar: null,
-    type: 'mail',
-    createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'Delivery processing',
-    description: 'Your order is being shipped',
-    avatar: null,
-    type: 'order_shipped',
-    createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-];
-
 export default function NotificationsPopover() {
   const anchorRef = useRef(null);
+  const navigate = useNavigate();
 
-  const [notifications, setNotifications] = useState(NOTIFICATIONS);
+  const notifications = useSelector(state => state.notification.data)
 
-  const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
+  const totalUnRead = Object.values(notifications).filter((item) => item.isUnRead === true).length;
 
   const [open, setOpen] = useState(null);
+
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -94,13 +51,16 @@ export default function NotificationsPopover() {
   };
 
   const handleMarkAllAsRead = () => {
-    setNotifications(
-      notifications.map((notification) => ({
-        ...notification,
-        isUnRead: false,
-      }))
-    );
+
   };
+
+  const handleDeleteAllNotification = () => {
+    removeAllNotification();
+  }
+
+  const handleNavigate = (link) => {
+    navigate(link);
+  }
 
   return (
     <>
@@ -123,58 +83,33 @@ export default function NotificationsPopover() {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="subtitle1">Notifications</Typography>
+            <Typography variant="subtitle1">Thông Báo</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              You have {totalUnRead} unread messages
+              Bạn có {totalUnRead} thông báo chưa đọc
             </Typography>
           </Box>
 
           {totalUnRead > 0 && (
-            <Tooltip title=" Mark all as read">
-              <IconButton color="primary" onClick={handleMarkAllAsRead}>
-                <Iconify icon="eva:done-all-fill" width={20} height={20} />
-              </IconButton>
-            </Tooltip>
+            <>
+              <Tooltip title="Xóa tất cả thông báo">
+                <IconButton color="error" onClick={handleDeleteAllNotification}>
+                  <Iconify icon="ic:round-delete-sweep" width={20} height={20} />
+                </IconButton>
+              </Tooltip>
+            </>
           )}
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
-          <List
-            disablePadding
-            subheader={
-              <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                New
-              </ListSubheader>
-            }
-          >
-            {notifications.slice(0, 2).map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
-            ))}
-          </List>
-
-          <List
-            disablePadding
-            subheader={
-              <ListSubheader disableSticky sx={{ py: 1, px: 2.5, typography: 'overline' }}>
-                Before that
-              </ListSubheader>
-            }
-          >
-            {notifications.slice(2, 5).map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
+          <List disablePadding>
+            {Object.values(notifications).map((notification) => (
+              <NotificationItem key={notification.id} notification={notification} handleClose={handleClose} handleNavigate={handleNavigate} />
             ))}
           </List>
         </Scrollbar>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <Box sx={{ p: 1 }}>
-          <Button fullWidth disableRipple>
-            View All
-          </Button>
-        </Box>
       </MenuPopover>
     </>
   );
@@ -184,7 +119,7 @@ export default function NotificationsPopover() {
 
 NotificationItem.propTypes = {
   notification: PropTypes.shape({
-    createdAt: PropTypes.instanceOf(Date),
+    createdAt: PropTypes.number,
     id: PropTypes.string,
     isUnRead: PropTypes.bool,
     title: PropTypes.string,
@@ -194,7 +129,7 @@ NotificationItem.propTypes = {
   }),
 };
 
-function NotificationItem({ notification }) {
+function NotificationItem({ notification, handleClose, handleNavigate }) {
   const { avatar, title } = renderContent(notification);
 
   return (
@@ -206,6 +141,13 @@ function NotificationItem({ notification }) {
         ...(notification.isUnRead && {
           bgcolor: 'action.selected',
         }),
+      }}
+      onClick={() => {
+        markNotificationAsReadById(notification.id);
+        handleClose();
+        if (notification.link) {
+          handleNavigate(notification.link);
+        }
       }}
     >
       <ListItemAvatar>
@@ -224,7 +166,7 @@ function NotificationItem({ notification }) {
             }}
           >
             <Iconify icon="eva:clock-outline" sx={{ mr: 0.5, width: 16, height: 16 }} />
-            {fToNow(notification.createdAt)}
+            {fToNow(new Date(notification.createdAt))}
           </Typography>
         }
       />
@@ -239,7 +181,7 @@ function renderContent(notification) {
     <Typography variant="subtitle2">
       {notification.title}
       <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-        &nbsp; {noCase(notification.description)}
+        &nbsp; {notification.description}
       </Typography>
     </Typography>
   );
