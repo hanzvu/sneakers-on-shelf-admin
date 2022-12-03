@@ -106,7 +106,7 @@ export default function VoucherList() {
                     <Grid container spacing={2} p={3} justifyContent={"space-between"}>
                         <Grid item xs={7}>
                             <Stack direction={"row"} spacing={1}>
-                                <TextField id="outlined-basic" label="Tìm Đơn Hàng" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
+                                <TextField id="outlined-basic" label="Tìm Mã Giảm Giá" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
                                 <Button variant="contained" color="primary" type="submit">Tìm Kiếm</Button>
                                 <Button variant="contained" color="warning" type="button" onClick={handleRefresh}>Làm Mới</Button>
                             </Stack>

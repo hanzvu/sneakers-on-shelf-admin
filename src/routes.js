@@ -23,6 +23,10 @@ import VoucherManagementLayout from './sos/layouts/VoucherManagementLayout';
 import CreateVoucher from './sos/components/voucher/CreateVoucher';
 import TransactionManagementLayout from './sos/layouts/TransactionManagementLayout';
 import TransactionList from './sos/components/transaction/TransactionList';
+import BrandManagementLayout from './sos/layouts/BrandManagementLayout';
+import BrandList from './sos/components/brand/BrandList';
+import CategoryManagementLayout from './sos/layouts/CategoryManagementLayout';
+import CategoryList from './sos/components/category/CategoryList';
 import AccountManagementLayout from './sos/layouts/AccountManagementLayout';
 import AccountList from './sos/components/account/AccountList';
 import AccountDetail from './sos/components/account/AccountDetail';
@@ -94,6 +98,20 @@ export default function Router() {
               children: [
                 { path: '', element: <ProductList /> },
                 { path: ':id', element: <ProductDetail /> },
+              ]
+            },
+            { 
+              path: 'brand', 
+              element: <BrandManagementLayout />,
+              children: [
+                { path: '', element: <BrandList /> },
+              ]
+            },
+            { 
+              path: 'category',
+              element: <CategoryManagementLayout />,
+              children: [
+                { path: '', element: <CategoryList /> }
               ]
             },
             { path: 'blog', element: <Blog /> },

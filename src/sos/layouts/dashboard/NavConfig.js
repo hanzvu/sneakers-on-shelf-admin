@@ -37,6 +37,16 @@ const navConfig = [
     icon: getIcon('eva:shopping-bag-fill'),
   },
   {
+    title: 'Nhãn Hiệu',
+    path: '/dashboard/brand',
+    icon: getIcon('eva:pricetags-fill'),
+  },
+  {
+    title: 'Danh Mục',
+    path: '/dashboard/category',
+    icon: getIcon('eva:list-fill')
+  },
+  {
     title: 'Mã Giảm Giá',
     path: '/dashboard/vouchers',
     icon: getIcon('mdi:voucher'),
