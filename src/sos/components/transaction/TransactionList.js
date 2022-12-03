@@ -43,7 +43,6 @@ export default function TransactionList() {
     const handleSubmitQuery = (e) => {
         e.preventDefault();
         setSearchParams({
-            ...Object.fromEntries(searchParams.entries()),
             query
         })
     }
@@ -63,15 +62,26 @@ export default function TransactionList() {
             <Card>
                 <form onSubmit={handleSubmitQuery}>
                     <Grid container spacing={2} p={3} justifyContent={"space-between"}>
-                        <Grid item md={6}>
+                        <Grid item md={5}>
                             <Stack direction={"row"} spacing={1}>
                                 <TextField id="outlined-basic" label="Tìm Kiếm" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
                                 <Button variant="contained" color="primary" type="submit">Tìm Kiếm</Button>
                                 <Button variant="contained" color="warning" type="button" onClick={handleRefresh}>Làm Mới</Button>
                             </Stack>
                         </Grid>
-                        <Grid item md={6}>
+                        <Grid item sx={12} container>
                             <Stack direction={"row"} justifyContent={"flex-end"} spacing={2}>
+                                <CollectionSorter value={searchParams.get('transaction-status')}
+                                    title="Trạng thái"
+                                    defaultValue="Tất cả"
+                                    handleChange={transactionStatus => {
+                                        setSearchParams({
+                                            ...Object.fromEntries(searchParams.entries()),
+                                            'transaction-status': transactionStatus
+                                        })
+                                    }}
+                                    options={TRANSACTION_STATUS_OPTIONS}
+                                />
                                 <CollectionSorter value={searchParams.get('transaction-type')}
                                     title="Loại"
                                     defaultValue="Tất cả"
@@ -119,9 +129,10 @@ export default function TransactionList() {
                                     <TableCell align="center">ID</TableCell>
                                     <TableCell align="center">Mã Đơn Hàng</TableCell>
                                     <TableCell align="center">Số Tiền</TableCell>
-                                    <TableCell align="center">Ngày Thanh Toán</TableCell>
+                                    <TableCell align="center">Thời Gian</TableCell>
                                     <TableCell align="center">Loại Thanh Toán</TableCell>
                                     <TableCell align="center">Phương Thức Thanh Toán</TableCell>
+                                    <TableCell align="center">Trạng Thái</TableCell>
                                     <TableCell align="center">Người Xác Nhận</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -165,6 +176,9 @@ export default function TransactionList() {
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Chip label={transaction.paymentMethod.description} color={transaction.paymentMethod.color} />
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Chip label={transaction.transactionStatus.description} color={transaction.transactionStatus.color} />
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
@@ -214,6 +228,13 @@ const SORT_BY_OPTIONS = {
     'amount_asc': { value: 'amount_asc', label: 'Số tiền tăng dần' },
     'amount_desc': { value: 'amount_desc', label: 'Số tiền giảm dần' },
 };
+
+const TRANSACTION_STATUS_OPTIONS = {
+    '': { value: '', label: 'Tất cả' },
+    'PENDING': { value: 'PENDING', label: 'Đang chờ' },
+    'FAILED': { value: 'FAILED', label: 'Thất bại' },
+    'APPROVED': { value: 'APPROVED', label: 'Thành công' },
+}
 
 const TRANSACTION_TYPE_OPTIONS = {
     '': { value: '', label: 'Tất cả' },

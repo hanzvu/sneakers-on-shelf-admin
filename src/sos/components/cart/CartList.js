@@ -50,7 +50,6 @@ export default function CartList() {
         }
 
         setSearchParams({
-            ...Object.fromEntries(searchParams.entries()),
             query
         })
     }

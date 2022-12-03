@@ -52,7 +52,6 @@ export default function VoucherList() {
         }
 
         setSearchParams({
-            ...Object.fromEntries(searchParams.entries()),
             query
         })
     }
@@ -74,17 +73,6 @@ export default function VoucherList() {
         }).catch(() => {
             showSnackbar("Có lỗi xảy ra, hãy thử lại sau.", "error");
         })
-    }
-
-    const handleStatusFilter = status => {
-        if (status) {
-            setSearchParams({
-                ...Object.fromEntries(searchParams.entries()),
-                status
-            })
-            return;
-        }
-        setSearchParams({})
     }
 
     const getVoucherColor = (fromDate, toDate) => {

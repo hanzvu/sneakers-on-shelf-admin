@@ -64,7 +64,6 @@ export default function CategoryList() {
         }
 
         setSearchParams({
-            ...Object.fromEntries(searchParams.entries()),
             query
         })
     }
@@ -131,7 +130,7 @@ export default function CategoryList() {
                             </Stack>
                         </Grid>
                         <Grid item xs={5} container justifyContent={"flex-end"}>
-                        <Stack direction={"row"} spacing={1}>
+                            <Stack direction={"row"} spacing={1}>
                                 <CollectionSorter value={searchParams.get('status')}
                                     title="Trạng thái"
                                     defaultValue="Tất cả"

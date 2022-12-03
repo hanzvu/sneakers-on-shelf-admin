@@ -63,17 +63,6 @@ export default function OrderList() {
         setSearchParams({});
     }
 
-    const handleStatusFilter = status => {
-        if (status) {
-            setSearchParams({
-                ...Object.fromEntries(searchParams.entries()),
-                status
-            })
-            return;
-        }
-        setSearchParams({})
-    }
-
     const handleCreateCart = () => {
         createCart().then(data => {
             navigate(`/dashboard/carts/${data.id}`);

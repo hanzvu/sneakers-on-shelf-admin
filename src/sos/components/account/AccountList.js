@@ -50,7 +50,6 @@ export default function AccountList() {
     const handleSubmitQuery = (e) => {
         e.preventDefault();
         setSearchParams({
-            ...Object.fromEntries(searchParams.entries()),
             query
         })
     }

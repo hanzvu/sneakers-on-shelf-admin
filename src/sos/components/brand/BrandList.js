@@ -64,7 +64,6 @@ export default function BrandList() {
         }
 
         setSearchParams({
-            ...Object.fromEntries(searchParams.entries()),
             query
         })
     }

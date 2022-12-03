@@ -60,7 +60,6 @@ export default function ProductList() {
     const handleSubmitQuery = (e) => {
         e.preventDefault();
         setSearchParams({
-            ...Object.fromEntries(searchParams.entries()),
             query
         })
     }
