@@ -57,7 +57,7 @@ export default function CreateVoucher() {
     };
 
     const handleSubmitVoucherOnClick = () => {
-        if (voucherFormInput.code === '') {
+        if (voucherFormInput.code.length == null || voucherFormInput.code.trimStart().trimEnd().length === 0) {
             showSnackbar("Bạn chưa nhập mã giảm giá", "warning")
             return;
         }
