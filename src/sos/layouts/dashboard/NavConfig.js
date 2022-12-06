@@ -57,9 +57,13 @@ const navConfig = [
         path: '/dashboard/category'
       },
       {
+        title: 'Vật Liệu',
+        path: '/dashboard/material'
+      },
+      {
         title: 'Mã Giảm Giá',
         path: '/dashboard/vouchers',
-      }
+      },
     ]
   },
   {
