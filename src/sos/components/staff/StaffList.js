@@ -23,14 +23,13 @@ import {
 
 import Scrollbar from "../../../components/Scrollbar";
 import Iconify from "../../../components/Iconify";
-import { fCurrency } from "../../../utils/formatNumber";
-import { findTransactions } from "../../services/TransactionService";
 import CollectionSorter from "../common/CollectionSorter";
 import { getPageAccount, updateAccountStatus } from "../../services/AccountService";
 import { showSnackbar } from "../../services/NotificationService";
-import { getMemberOfferPolicies } from "../../services/CartService";
+import { getPageStaff } from "../../services/StaffService";
+import ImportStaff from "./ImportStaff";
 
-export default function AccountList() {
+export default function StaffList() {
 
     const navigate = useNavigate();
 
@@ -38,20 +37,14 @@ export default function AccountList() {
 
     const [query, setQuery] = useState('');
 
-    const [memberOfferPolicies, setMemberOfferPolicies] = useState([]);
-
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
         fetchData();
     }, [searchParams])
 
-    useEffect(() => {
-        getMemberOfferPolicies().then(rs => setMemberOfferPolicies(rs));
-    }, [])
-
     const fetchData = () => {
-        getPageAccount(Object.fromEntries(searchParams.entries())).then(data => {
+        getPageStaff(Object.fromEntries(searchParams.entries())).then(data => {
             setData(data);
         })
     }
@@ -76,20 +69,9 @@ export default function AccountList() {
         })
     }
 
-    const getMemberOfferRankChip = (point) => {
-        for (let index = 0; index < memberOfferPolicies.length; index += 1) {
-            const mop = memberOfferPolicies[index];
-            if (point >= mop.requiredPoint) {
-                return <Chip label={mop.memberRank.description} color={mop.memberRank.color} />
-            }
-        }
-
-        return <Chip label="Khách hàng" color="default" />;
-    }
-
     return (<>
         {data &&
-            memberOfferPolicies &&
+            data &&
             <Card>
                 <form onSubmit={handleSubmitQuery}>
                     <Grid container spacing={2} p={3} justifyContent={"space-between"}>
@@ -113,11 +95,12 @@ export default function AccountList() {
                                     }}
                                     options={ACCOUNT_STATUS_OPTIONS}
                                 />
-                                <Link to={"/dashboard/accounts/new"} className="text-decoration-none">
+                                <Link to={"/dashboard/staff/new"} className="text-decoration-none">
                                     <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
                                         Tạo tài khoản
                                     </Button>
                                 </Link>
+                                <ImportStaff onSuccess={fetchData}/>
                             </Stack>
                         </Grid>
                     </Grid>
@@ -133,8 +116,6 @@ export default function AccountList() {
                                     <TableCell align="center">Email</TableCell>
                                     <TableCell align="center">Họ Và Tên</TableCell>
                                     <TableCell align="center" width={"13%"}>Ngày Tạo</TableCell>
-                                    <TableCell align="center">Điểm</TableCell>
-                                    <TableCell align="center" width={"13%"}>Hạng</TableCell>
                                     <TableCell align="center">Trạng Thái</TableCell>
                                     <TableCell align="center" colSpan={2}>Thao Tác</TableCell>
                                 </TableRow>
@@ -177,20 +158,12 @@ export default function AccountList() {
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Typography variant="body2" flexWrap>
-                                                    {account.point}
-                                                </Typography>
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                {getMemberOfferRankChip(account.point)}
-                                            </TableCell>
-                                            <TableCell align="center">
                                                 <Chip label={account.accountStatus.description} color={account.accountStatus.color} />
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Stack direction={"row"} spacing={1}>
                                                     <Tooltip title="Chỉnh sửa">
-                                                        <Link to={`/dashboard/accounts/${account.id}`} className="text-decoration-none">
+                                                        <Link to={`/dashboard/staff/${account.id}`} className="text-decoration-none">
                                                             <IconButton aria-label="edit" size="medium" color="primary">
                                                                 <Iconify icon="eva:edit-2-fill" />
                                                             </IconButton>
@@ -239,7 +212,7 @@ export default function AccountList() {
                         renderItem={(item) => (
                             <PaginationItem
                                 component={Link}
-                                to={`/dashboard/accounts${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
+                                to={`/dashboard/staff${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
                                 {...item}
                             />
                         )}

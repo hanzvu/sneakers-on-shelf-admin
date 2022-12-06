@@ -22,6 +22,7 @@ import {
     DialogContentText,
     Chip,
     Switch,
+    Tooltip,
 } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import Scrollbar from "../../../components/Scrollbar";
@@ -85,6 +86,21 @@ export default function CategoryList() {
         }
 
         handleSubmitCategory(category);
+    }
+
+    const handleUpdateCategoryStatus = (id) => {
+        deleteCategory(id).then(() => {
+            findCategories(Object.fromEntries(searchParams.entries())).then(data => {
+                setData(data)
+            });
+            showSnackbar("Đã ngừng kích hoạt", "success");
+        }).catch(error => {
+            if (error.response && error.response.status === 400) {
+                showSnackbar(error.response.data, "error");
+            } else {
+                showSnackbar("Có lỗi xảy ra, hãy thử lại sau.", "error");
+            }
+        })
     }
 
     const handleSubmitCategory = (data) => {
@@ -180,34 +196,24 @@ export default function CategoryList() {
                                             </TableCell>
                                             <TableCell align="center" width={"15%"}>
                                                 <Stack direction="row" alignItems="center" justifyContent={"center"} spacing={2}>
-                                                    <IconButton aria-label="edit" size="medium" color="primary"
-                                                        onClick={() => {
-                                                            setOpenSave(true);
-                                                            setTitle("Sửa");
-                                                            findCategory(Category.id).then(data => {
-                                                                setCategory(prevState => ({ ...prevState, id: data.id, name: data.name, activeStatus: data.activeStatus.name }));
-                                                                setChecked(data.activeStatus.name === "ACTIVE")
-                                                            });
-                                                        }}>
-                                                        <Iconify icon="eva:edit-2-fill" />
-                                                    </IconButton>
-                                                    <IconButton aria-label="delete" size="medium" color="error" disabled={Category.activeStatus.name !== "ACTIVE"}
-                                                        onClick={() => {
-                                                            deleteCategory(Category.id).then(() => {
-                                                                findCategories(Object.fromEntries(searchParams.entries())).then(data => {
-                                                                    setData(data)
+                                                    <Tooltip title="Chỉnh sửa">
+                                                        <IconButton aria-label="edit" size="medium" color="primary"
+                                                            onClick={() => {
+                                                                setOpenSave(true);
+                                                                setTitle("Sửa");
+                                                                findCategory(Category.id).then(data => {
+                                                                    setCategory(prevState => ({ ...prevState, id: data.id, name: data.name, activeStatus: data.activeStatus.name }));
+                                                                    setChecked(data.activeStatus.name === "ACTIVE")
                                                                 });
-                                                                showSnackbar("Đã ngừng kích hoạt", "success");
-                                                            }).catch(error => {
-                                                                if (error.response && error.response.status === 400) {
-                                                                    showSnackbar(error.response.data, "error");
-                                                                } else {
-                                                                    showSnackbar("Có lỗi xảy ra, hãy thử lại sau.", "error");
-                                                                }
-                                                            })
-                                                        }}>
-                                                        <Iconify icon="eva:trash-fill" />
-                                                    </IconButton>
+                                                            }}>
+                                                            <Iconify icon="eva:edit-2-fill" />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip title="Hủy kích hoạt">
+                                                        <IconButton disabled={Category.activeStatus.name !== 'ACTIVE'} aria-label="inactive" size="medium" color="error" onClick={() => { handleUpdateCategoryStatus(Category.id) }}>
+                                                            <Iconify icon="material-symbols:inactive-order-outline-rounded" />
+                                                        </IconButton>
+                                                    </Tooltip>
                                                 </Stack>
                                             </TableCell>
                                         </TableRow>

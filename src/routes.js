@@ -34,6 +34,10 @@ import ProductManagementLayout from './sos/layouts/ProductManagementLayout';
 import ProductList from './sos/components/product/ProductList';
 import ProductDetail from './sos/components/product/ProductDetail';
 import GoogleFCMListener from './sos/components/fcm/GoogleFCMListener';
+import StaffManagementLayout from './sos/layouts/StaffManagementLayout';
+import StaffList from './sos/components/staff/StaffList';
+import StaffDetail from './sos/components/staff/StaffDetail';
+import MemberOfferPolicyList from './sos/components/member-offer-policy/MemberOfferPolicyList';
 
 // ----------------------------------------------------------------------
 
@@ -59,6 +63,14 @@ export default function Router() {
               children: [
                 { path: '', element: <AccountList /> },
                 { path: ':id', element: <AccountDetail /> },
+              ]
+            },
+            {
+              path: 'staff',
+              element: <StaffManagementLayout />,
+              children: [
+                { path: '', element: <StaffList /> },
+                { path: ':id', element: <StaffDetail /> },
               ]
             },
             {
@@ -100,21 +112,21 @@ export default function Router() {
                 { path: ':id', element: <ProductDetail /> },
               ]
             },
-            { 
-              path: 'brand', 
+            {
+              path: 'brand',
               element: <BrandManagementLayout />,
               children: [
                 { path: '', element: <BrandList /> },
               ]
             },
-            { 
+            {
               path: 'category',
               element: <CategoryManagementLayout />,
               children: [
                 { path: '', element: <CategoryList /> }
               ]
             },
-            { path: 'blog', element: <Blog /> },
+            { path: 'member-offer', element: <MemberOfferPolicyList /> },
           ],
         },
         {

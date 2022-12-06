@@ -3,6 +3,7 @@ import { Avatar, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle
 import Scrollbar from "../../../components/Scrollbar";
 import { getAccountDTOById, getAccountDTOs } from "../../services/AccountService";
 import { showSnackbar } from "../../services/NotificationService";
+import { getMemberOfferPolicyByAccountId } from "../../services/CartService";
 
 const Transition = forwardRef((props, ref) => {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -25,14 +26,16 @@ export default function CustomerAccountSelector({ setSelectedAccount, setSelecte
         });
     }
 
-    const handleSelectAccount = id => {
-        getAccountDTOById(id).then(data => {
-            setSelectedAccount(data);
+    const handleSelectAccount = async (id) => {
+        try {
+            const data = await getAccountDTOById(id);
+            const memberOfferPolicy = await getMemberOfferPolicyByAccountId(id);
+            setSelectedAccount({ ...data, memberOfferPolicy });
             setSelectedCustomerInfo(null);
             handleClose();
-        }).catch(() => {
+        } catch {
             showSnackbar("Có lỗi xảy ra, hãy thử lại sau.", "error");
-        });
+        };
     }
 
     const handleClickOpen = () => {

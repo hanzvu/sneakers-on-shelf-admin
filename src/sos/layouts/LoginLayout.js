@@ -18,6 +18,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
     display: 'flex',
     justifyContent: 'flex-start',
     flexDirection: 'column',
+    paddingTop: 100
 }));
 
 export default function LoginLayout() {
@@ -28,19 +29,12 @@ export default function LoginLayout() {
             <RootStyle>
                 <Container maxWidth="sm">
                     <ContentStyle>
-                        <Typography variant="h4" textAlign={"center"} gutterBottom>
+                        <Typography variant="h4" textAlign={"center"} py={2}>
                             ĐĂNG NHẬP
                         </Typography>
                         <AuthSocial />
 
                         <LoginForm />
-
-                        <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                            Bạn chưa có tài khoản ?{' '}
-                            <Link variant="subtitle2" component={RouterLink} to="/register">
-                                Đăng ký ngay
-                            </Link>
-                        </Typography>
                     </ContentStyle>
                 </Container>
             </RootStyle>

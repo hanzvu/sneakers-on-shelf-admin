@@ -66,6 +66,7 @@ export default function ProductDetailForm({ data, fetchData }) {
             } else {
                 showSnackbar('Thêm sản phẩm thành công.');
                 navigate(`/dashboard/products/${created.id}`);
+                window.location.reload();
             }
         }).catch(error => {
             if (error.response && error.response.status === 400) {

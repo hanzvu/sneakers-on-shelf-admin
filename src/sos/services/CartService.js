@@ -45,3 +45,13 @@ export const submitCart = async (id, data) => {
     const response = await axios.post(`${BASE_API}/admin/v1/carts/${id}/submit`, data);
     return response.data;
 }
+
+export const getMemberOfferPolicyByAccountId = async (id) => {
+    const response = await axios.get(`${BASE_API}/api/v1/accounts/${id}/member-offer-policy`);
+    return response.data;
+}
+
+export const getMemberOfferPolicies = async () => {
+    const response = await axios.get(`${BASE_API}/api/v1/member-offer-policies`);
+    return response.data;
+}

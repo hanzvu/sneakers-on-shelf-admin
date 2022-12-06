@@ -16,6 +16,8 @@ import {
     Chip,
     TextField,
     Grid,
+    IconButton,
+    Tooltip,
 } from "@mui/material";
 
 import Scrollbar from "../../../components/Scrollbar";
@@ -151,8 +153,19 @@ export default function CartList() {
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Stack direction={"row"} spacing={2} justifyContent="center">
-                                                    <Link to={`/dashboard/carts/${cart.id}`}><Button variant="contained" color="primary">Chi Tiết</Button></Link>
-                                                    <Button variant="contained" color="error" onClick={() => { handleCancellCart(cart.id) }}>Hủy</Button>
+                                                    <Tooltip title="Chỉnh sửa">
+                                                        <Link to={`/dashboard/carts/${cart.id}`}>
+                                                            <IconButton aria-label="edit" size="medium" color="primary">
+                                                                <Iconify icon="eva:edit-2-fill" />
+                                                            </IconButton>
+                                                        </Link>
+                                                    </Tooltip>
+                                                    <Tooltip title="Xóa">
+                                                        <IconButton aria-label="delete" size="medium" color="error"
+                                                            onClick={() => { handleCancellCart(cart.id) }}>
+                                                            <Iconify icon="eva:trash-fill" />
+                                                        </IconButton>
+                                                    </Tooltip>
                                                 </Stack>
                                             </TableCell>
                                         </TableRow>

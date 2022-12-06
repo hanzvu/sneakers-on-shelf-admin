@@ -176,7 +176,7 @@ export default function CartDetail() {
 
     const handleSubmitCart = (data) => {
         submitCart(cart.id, data).then(data => {
-            navigate(`/dashboard/orders/${data}`)
+            navigate(`/dashboard/orders/${data.id}`)
         }).catch(error => {
             if (error.response && error.response.status === 400) {
                 showSnackbar(error.response.data, "error");
@@ -184,6 +184,11 @@ export default function CartDetail() {
                 showSnackbar("Có lỗi xảy ra, hãy thử lại sau.", "error");
             }
         })
+    }
+
+    const calculateTotal = (total, fee, discount, offer) => {
+        const rs = total + fee - discount - (offer > 0 ? total * offer / 100 : 0);
+        return rs > 0 ? rs : 0;
     }
 
     if (cart == null) {
@@ -481,6 +486,22 @@ export default function CartDetail() {
                                         </Grid>
                                     }
 
+                                    {
+                                        selectedAccount && selectedAccount.memberOfferPolicy && selectedAccount.memberOfferPolicy.offer > 0 &&
+                                        <Grid item container >
+                                            <Grid item container xs={6}>
+                                                <Typography variant="body1">
+                                                    Quyền lợi thành viên {selectedAccount.memberOfferPolicy.memberRank.description} ({selectedAccount.memberOfferPolicy.offer}%)
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} container justifyContent={"flex-end"}>
+                                                <Typography variant="body1">
+                                                    {fCurrency(total(cart.items) * selectedAccount.memberOfferPolicy.offer / 100)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    }
+
                                     <Grid item container >
                                         <Grid item container xs={6}>
                                             <Typography sx={{ fontWeight: 'bold' }} >
@@ -489,7 +510,7 @@ export default function CartDetail() {
                                         </Grid>
                                         <Grid item xs={6} container justifyContent={"flex-end"}>
                                             <Typography sx={{ fontWeight: 'bold' }} color="error">
-                                                {fCurrency(total(cart.items) + (shipping ? delivery.fee : 0) - (voucher ? voucher.discount : 0))}
+                                                {fCurrency(calculateTotal(total(cart.items), (shipping ? delivery.fee : 0), (voucher ? voucher.discount : 0), (selectedAccount && selectedAccount.memberOfferPolicy ? selectedAccount.memberOfferPolicy.offer : 0)))}
                                             </Typography>
                                         </Grid>
                                     </Grid>

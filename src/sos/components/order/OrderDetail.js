@@ -70,6 +70,10 @@ export default function OrderDetail() {
         })
     }
 
+    const calculateTotal = (total, fee, discount, offer) => {
+        const rs = total + fee - discount - offer;
+        return rs > 0 ? rs : 0;
+    }
 
     if (data == null) {
         return null;
@@ -354,9 +358,6 @@ export default function OrderDetail() {
                                         </Typography>
                                     </Grid>
                                 </Grid>
-                                {
-
-                                }
                                 <Grid item container >
                                     <Grid item container xs={6}>
                                         <Typography variant="body1">
@@ -369,6 +370,21 @@ export default function OrderDetail() {
                                         </Typography>
                                     </Grid>
                                 </Grid>
+                                {
+                                    data.memberOffer > 0 &&
+                                    <Grid item container >
+                                        <Grid item container xs={6}>
+                                            <Typography variant="body1">
+                                                Quyền lợi thành viên
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={6} container justifyContent={"flex-end"}>
+                                            <Typography variant="body1">
+                                                {fCurrency(data.memberOffer)}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                }
                                 <Grid item container >
                                     <Grid item container xs={6}>
                                         <Typography sx={{ fontWeight: 'bold' }} >
@@ -377,7 +393,7 @@ export default function OrderDetail() {
                                     </Grid>
                                     <Grid item xs={6} container justifyContent={"flex-end"}>
                                         <Typography sx={{ fontWeight: 'bold' }} color="crimson">
-                                            {fCurrency(data.total + data.fee - data.discount)}
+                                            {fCurrency(calculateTotal(data.total, data.fee, data.discount, data.memberOffer))}
                                         </Typography>
                                     </Grid>
                                 </Grid>

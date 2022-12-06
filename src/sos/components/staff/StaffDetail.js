@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { getStaffAccountDTOById } from '../../services/StaffService';
 
-import { getAccountDTOById } from '../../services/AccountService';
-import AccountDetailForm from './AccountDetailForm';
+import StaffDetailForm from './StaffDetailForm';
 
-export default function AccountDetail() {
+export default function StaffDetail() {
 
     const params = useParams();
 
@@ -23,7 +23,7 @@ export default function AccountDetail() {
     }, [])
 
     const fetchData = () => {
-        getAccountDTOById(params.id).then(data => {
+        getStaffAccountDTOById(params.id).then(data => {
             setAccount(data);
         })
     }
@@ -32,9 +32,7 @@ export default function AccountDetail() {
         return;
     }
 
-    console.log(account);
-
     return (<>
-        <AccountDetailForm account={account} fetchData={fetchData} />
+        <StaffDetailForm account={account} fetchData={fetchData} />
     </>)
 }

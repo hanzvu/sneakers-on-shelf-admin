@@ -7,10 +7,11 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Chip, Container, Dialog, DialogContent, DialogTitle, FormControlLabel, Grid, Paper, Slide, Stack, styled, Switch, Typography } from '@mui/material';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
-import { createAccount, resetAccountPassword, updateAccountInfo, updateAccountStatus } from '../../services/AccountService';
+import { resetAccountPassword, updateAccountStatus } from '../../services/AccountService';
 import { showSnackbar } from '../../services/NotificationService';
+import { createStaff, updateStaffInfo } from '../../services/StaffService';
 
-export default function AccountDetailForm({ account, fetchData }) {
+export default function StaffDetailForm({ account, fetchData }) {
 
     const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ export default function AccountDetailForm({ account, fetchData }) {
 
     const onSubmit = async (data) => {
         if (account.id != null) {
-            updateAccountInfo(account.id, { ...data }).then((created) => {
+            updateStaffInfo(account.id, { ...data }).then((created) => {
                 showSnackbar('Cập nhật tài khoản thành công.')
             }).catch(error => {
                 if (error.response && error.response.status === 400) {
@@ -50,7 +51,7 @@ export default function AccountDetailForm({ account, fetchData }) {
                 }
             })
         } else {
-            createAccount({ ...data }).then((created) => {
+            createStaff({ ...data }).then((created) => {
                 showSnackbar('Thêm tài khoản thành công.');
                 navigate(`/dashboard/accounts/${created}`);
             }).catch(error => {
@@ -94,7 +95,7 @@ export default function AccountDetailForm({ account, fetchData }) {
                     <Box>
                         <Grid container justifyContent={"center"} pb={1} alignItems="center">
                             <Typography variant="h4" align='center' color={"gray"}>
-                                {account.id != null ? 'Cập Nhật Tài Khoản' : 'Tạo Tài Khoản'}
+                                {account.id != null ? 'Cập Nhật Tài Khoản Nhân Viên' : 'Tạo Tài Khoản Nhân Viên'}
                             </Typography>
                         </Grid>
                         <Container maxWidth="md">

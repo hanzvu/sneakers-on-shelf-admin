@@ -17,6 +17,8 @@ import {
     TextField,
     Grid,
     Box,
+    Tooltip,
+    IconButton,
 } from "@mui/material";
 
 import Scrollbar from "../../../components/Scrollbar";
@@ -204,10 +206,19 @@ export default function VoucherList() {
                                                 <Chip label={`${new Date(voucher.startDate).toLocaleDateString()} - ${new Date(voucher.experationDate).toLocaleDateString()}`} color={getVoucherColor(voucher.startDate, voucher.experationDate)} />
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Button hidden={voucher.voucherStatus.name !== "ACTIVE"} variant="outlined" color="error" onClick={() => { handleInactiveVoucher(voucher.id) }}>Hủy Kích Hoạt</Button>
                                                 {
-                                                    voucher.voucherStatus.name !== "ACTIVE" &&
-                                                    <Button variant="outlined" color="error" disabled>Đã Hủy</Button>
+                                                    voucher.voucherStatus.name === "ACTIVE" ?
+                                                        <Tooltip title="Hủy kích hoạt">
+                                                            <IconButton aria-label="inactive" size="medium" color="error" onClick={() => { handleInactiveVoucher(voucher.id) }}>
+                                                                <Iconify icon="material-symbols:inactive-order-outline-rounded" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        :
+                                                        <Tooltip title="Đã hủy">
+                                                            <IconButton aria-label="active" size="medium" color="warning" disabled>
+                                                                <Iconify icon="material-symbols:inactive-order-rounded" />
+                                                            </IconButton>
+                                                        </Tooltip>
                                                 }
                                             </TableCell>
                                         </TableRow>
