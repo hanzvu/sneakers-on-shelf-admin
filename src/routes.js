@@ -38,6 +38,8 @@ import StaffManagementLayout from './sos/layouts/StaffManagementLayout';
 import StaffList from './sos/components/staff/StaffList';
 import StaffDetail from './sos/components/staff/StaffDetail';
 import MemberOfferPolicyList from './sos/components/member-offer-policy/MemberOfferPolicyList';
+import MaterialManagementLayout from './sos/layouts/MaterialManagementLayout';
+import MaterialList from './sos/components/material/MaterialList';
 
 // ----------------------------------------------------------------------
 
@@ -124,6 +126,13 @@ export default function Router() {
               element: <CategoryManagementLayout />,
               children: [
                 { path: '', element: <CategoryList /> }
+              ]
+            },
+            {
+              path: 'material',
+              element: <MaterialManagementLayout />,
+              children: [
+                { path: '', element: <MaterialList /> }
               ]
             },
             { path: 'member-offer', element: <MemberOfferPolicyList /> },
