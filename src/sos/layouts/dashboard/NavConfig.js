@@ -57,6 +57,10 @@ const navConfig = [
         path: '/dashboard/category'
       },
       {
+        title: 'Màu Sắc',
+        path: '/dashboard/color'
+      },
+      {
         title: 'Vật Liệu',
         path: '/dashboard/material'
       },
