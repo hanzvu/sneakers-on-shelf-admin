@@ -40,6 +40,8 @@ import StaffDetail from './sos/components/staff/StaffDetail';
 import MemberOfferPolicyList from './sos/components/member-offer-policy/MemberOfferPolicyList';
 import MaterialManagementLayout from './sos/layouts/MaterialManagementLayout';
 import MaterialList from './sos/components/material/MaterialList';
+import ColorList from './sos/components/color/ColorList';
+import ColorManagementLayout from './sos/layouts/ColorManagementLayout';
 
 // ----------------------------------------------------------------------
 
@@ -133,6 +135,13 @@ export default function Router() {
               element: <MaterialManagementLayout />,
               children: [
                 { path: '', element: <MaterialList /> }
+              ]
+            },
+            {
+              path: 'color',
+              element: <ColorManagementLayout />,
+              children: [
+                { path: '', element: <ColorList /> }
               ]
             },
             { path: 'member-offer', element: <MemberOfferPolicyList /> },
