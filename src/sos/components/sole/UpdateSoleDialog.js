@@ -6,21 +6,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Dialog, DialogContent, Slide, Stack, Typography } from "@mui/material";
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
-import { updateMaterialName } from '../../services/MaterialService';
 import { showSnackbar } from '../../services/NotificationService';
+import { updateSoleName } from '../../services/SoleService';
 
 const Transition = forwardRef((props, ref) => {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function UpdateMaterialDialog({ material, setMaterial, onSuccess }) {
+export default function UpdateSoleDialog({ sole, setSole, onSuccess }) {
 
     const LoginSchema = Yup.object().shape({
-        name: Yup.string().required('Vui lòng nhập tên vật liệu.'),
+        name: Yup.string().required('Vui lòng nhập tên đế giày.'),
     });
 
     const defaultValues = {
-        name: material ? material.name : '',
+        name: sole ? sole.name : '',
     };
 
     const methods = useForm({
@@ -35,8 +35,8 @@ export default function UpdateMaterialDialog({ material, setMaterial, onSuccess 
     } = methods;
 
     const onSubmit = async (data) => {
-        updateMaterialName(material.id, data).then(() => {
-            setMaterial(null);
+        updateSoleName(sole.id, data).then(() => {
+            setSole(null);
             onSuccess();
             showSnackbar('Cập nhật vật liệu thành công.');
         }).catch(() => {
@@ -45,7 +45,7 @@ export default function UpdateMaterialDialog({ material, setMaterial, onSuccess 
     };
 
     const handleClose = () => {
-        setMaterial(null);
+        setSole(null);
     };
 
     return (
@@ -53,13 +53,13 @@ export default function UpdateMaterialDialog({ material, setMaterial, onSuccess 
             <Dialog
                 maxWidth={"sm"}
                 fullWidth
-                open={material != null}
+                open={sole != null}
                 TransitionComponent={Transition}
                 keepMounted
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description">
                 <Typography variant='h4' color={"dimgray"} textAlign={"center"} py={2}>
-                    CẬP NHẬT CHẤT LIỆU
+                    CẬP NHẬT VẬT LIỆU
                 </Typography>
                 <DialogContent sx={{ zIndex: 'modal' }}>
                     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

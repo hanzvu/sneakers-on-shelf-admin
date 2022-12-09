@@ -42,6 +42,8 @@ import MaterialManagementLayout from './sos/layouts/MaterialManagementLayout';
 import MaterialList from './sos/components/material/MaterialList';
 import ColorList from './sos/components/color/ColorList';
 import ColorManagementLayout from './sos/layouts/ColorManagementLayout';
+import SoleManagementLayout from './sos/layouts/SoleManagementLayout';
+import SoleList from './sos/components/sole/SoleList';
 
 // ----------------------------------------------------------------------
 
@@ -128,6 +130,13 @@ export default function Router() {
               element: <CategoryManagementLayout />,
               children: [
                 { path: '', element: <CategoryList /> }
+              ]
+            },
+            {
+              path: 'sole',
+              element: <SoleManagementLayout />,
+              children: [
+                { path: '', element: <SoleList /> }
               ]
             },
             {

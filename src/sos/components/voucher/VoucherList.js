@@ -150,6 +150,7 @@ export default function VoucherList() {
                         <Table>
                             <TableHead>
                                 <TableRow>
+                                    <TableCell align="center">STT</TableCell>
                                     <TableCell align="center" width={"5%"}>Mã</TableCell>
                                     <TableCell align="center" width={"10%"}>Giá Trị</TableCell>
                                     <TableCell align="center" width={"10%"}>Giá Trị Tối Đa</TableCell>
@@ -164,8 +165,13 @@ export default function VoucherList() {
 
                             <TableBody>
                                 {
-                                    data.content && data.content.map(voucher => (
+                                    data.content && data.content.map((voucher, index) => (
                                         <TableRow hover key={voucher.id} tabIndex={-1}>
+                                            <TableCell align="center">
+                                                <Typography variant="body2" flexWrap>
+                                                    {index + 1 + data.size * data.number}
+                                                </Typography>
+                                            </TableCell>
                                             <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
                                                     {voucher.code}

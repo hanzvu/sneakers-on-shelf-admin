@@ -25,6 +25,7 @@ export default function ProductImages({ product, fetchProduct }) {
         setLoading(true);
         uploadProductImage(product.id, e.target.files[0]).then(() => {
             fetchProduct();
+            fetchData();
         }).catch(error => {
             if (error.response && error.response.status === 400) {
                 showSnackbar(error.response.data, 'error')

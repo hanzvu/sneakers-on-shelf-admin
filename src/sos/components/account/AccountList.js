@@ -127,7 +127,7 @@ export default function AccountList() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">ID</TableCell>
+                                    <TableCell align="center">STT</TableCell>
                                     <TableCell align="center">Ảnh</TableCell>
                                     <TableCell align="center">Tên Tài Khoản</TableCell>
                                     <TableCell align="center">Email</TableCell>
@@ -142,7 +142,7 @@ export default function AccountList() {
 
                             <TableBody>
                                 {
-                                    data.content && data.content.map(account => (
+                                    data.content && data.content.map((account, index) => (
                                         <TableRow
                                             hover
                                             key={account.id}
@@ -150,7 +150,7 @@ export default function AccountList() {
                                             role="checkbox">
                                             <TableCell align="center">
                                                 <Typography variant="body2">
-                                                    {account.id}
+                                                    {index + 1 + data.size * data.number}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">

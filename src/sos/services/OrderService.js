@@ -37,3 +37,8 @@ export const addOrderItem = async (id, data) => {
     const response = await axios.post(`${BASE_API}/admin/v1/orders/${id}/order-items`, data);
     return response;
 }
+
+export const reverseOrderItem = async(id, data) => {
+    const response = await axios.put(`${BASE_API}/admin/v1/order-items/${id}/reverse`, data);
+    return response;
+}

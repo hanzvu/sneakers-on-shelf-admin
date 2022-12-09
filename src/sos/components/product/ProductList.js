@@ -165,6 +165,7 @@ export default function ProductList() {
                         <Table>
                             <TableHead>
                                 <TableRow>
+                                    <TableCell align="center">STT</TableCell>
                                     <TableCell align="center" width={"20%"}>Ảnh</TableCell>
                                     <TableCell align="center">Tên Sản Phẩm</TableCell>
                                     <TableCell align="center">Giá</TableCell>
@@ -177,12 +178,17 @@ export default function ProductList() {
 
                             <TableBody>
                                 {
-                                    data.products.content && data.products.content.map(product => (
+                                    data.products.content && data.products.content.map((product, index) => (
                                         <TableRow
                                             hover
                                             key={product.id}
                                             tabIndex={-1}
                                             role="checkbox">
+                                            <TableCell align="center">
+                                                <Typography>
+                                                    {index + 1 + data.products.size * data.products.number}
+                                                </Typography>
+                                            </TableCell>
                                             <TableCell align="center">
                                                 <Link to={`/dashboard/products/${product.id}`}>
                                                     <img alt={product.name} src={product.image} className="img-fluid" />

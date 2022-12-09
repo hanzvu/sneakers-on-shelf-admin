@@ -171,7 +171,7 @@ export default function CategoryList() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">ID</TableCell>
+                                    <TableCell align="center">STT</TableCell>
                                     <TableCell align="center">Tên Danh Mục</TableCell>
                                     <TableCell align="center">Trạng Thái</TableCell>
                                     <TableCell align="center">Thao Tác</TableCell>
@@ -179,11 +179,11 @@ export default function CategoryList() {
                             </TableHead>
                             <TableBody>
                                 {
-                                    data.content && data.content.map(Category => (
+                                    data.content && data.content.map((Category, index) => (
                                         <TableRow hover key={Category.id} tabIndex={-1}>
                                             <TableCell align="center" width={"10%"}>
                                                 <Typography variant="body1" flexWrap>
-                                                    {Category.id}
+                                                    {index + 1 + data.size * data.number}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center" width={"25%"}>

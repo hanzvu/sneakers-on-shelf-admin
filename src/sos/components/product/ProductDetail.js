@@ -6,6 +6,9 @@ import ProductDetailForm from './ProductDetailForm';
 import { getAllBrand, getAllCategory } from '../../services/CollectionService';
 import { ProductSize } from './ProductSize';
 import ProductImages from './ProductImages';
+import { findColors } from '../../services/ColorService';
+import { findMaterials } from '../../services/MaterialService';
+import { findSoles } from '../../services/SoleService';
 
 export default function ProductDetail() {
 
@@ -20,26 +23,40 @@ export default function ProductDetail() {
     const fetchData = async () => {
         const brands = await getAllBrand();
         const categories = await getAllCategory();
+        const colors = await findColors({ status: 'ACTIVE', page: 1, size: 100 });
+        const materials = await findMaterials({ status: 'ACTIVE', page: 1, size: 100 });
+        const soles = await findSoles({ status: 'ACTIVE', page: 1, size: 100 });
 
         const product = params.id === 'new' ? {
             name: '',
             sellPrice: 0,
             description: '',
+            category: null,
+            brand: null,
+            color: null,
+            material: null,
+            sole: null,
             productStatus: {
                 name: "ACTIVE"
             },
             productGender: {
                 name: "MEN",
             },
-            brand: {
-                id: brands[0].id
+            shoeHeight: {
+                name: 'LOW_TOP'
             },
-            category: {
-                id: categories[0].id
+            benefit: {
+                name: 'NEUTRAL'
             },
+            shoeFeel: {
+                name: 'NEUTRAL'
+            },
+            surface: {
+                name: 'NEUTRAL'
+            }
         } : await findProduct(params.id);
 
-        setData({ brands, categories, product });
+        setData({ brands, categories, colors, materials, soles, product });
     }
 
     const fetchProductData = async () => {
@@ -47,15 +64,29 @@ export default function ProductDetail() {
             name: '',
             sellPrice: 0,
             description: '',
+            brand: null,
+            category: null,
+            color: null,
+            material: null,
+            sole: null,
             productStatus: {
                 name: "ACTIVE"
             },
-            brand: {
-                id: 1
+            productGender: {
+                name: "MEN",
             },
-            category: {
-                id: 1
+            shoeHeight: {
+                name: 'LOW_TOP'
             },
+            benefit: {
+                name: 'NEUTRAL'
+            },
+            shoeFeel: {
+                name: 'NEUTRAL'
+            },
+            surface: {
+                name: 'NEUTRAL'
+            }
         } : await findProduct(params.id);
 
         setData({ ...data, product });

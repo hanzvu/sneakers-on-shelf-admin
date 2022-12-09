@@ -41,8 +41,8 @@ export default function ChangeOrderItemQuantity({ data, setData, onChangeProduct
                         data.changingProductQuantity &&
                         <Stack>
                             <Grid py={3} container className="border-bottom">
-                                <Grid container item lg={8}>
-                                    <Grid item lg={3} xs={4}>
+                                <Grid container item lg={8} spacing={2}>
+                                    <Grid item lg={4} xs={4}>
                                         <Link to={`/products/${data.changingProductQuantity.productId}`}><img src={data.changingProductQuantity.image} className="img-fluid" alt="product" /></Link>
                                     </Grid>
                                     <Grid item xs={8} container alignItems={"center"}>

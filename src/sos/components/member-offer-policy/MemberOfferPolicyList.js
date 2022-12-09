@@ -16,8 +16,6 @@ export default function MemberOfferPolicyList() {
         getMemberOfferPolicies().then(data => { setData(data) });
     }
 
-    console.log(data);
-
     return (<>
         {
             data &&

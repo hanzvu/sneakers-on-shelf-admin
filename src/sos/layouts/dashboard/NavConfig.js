@@ -61,7 +61,11 @@ const navConfig = [
         path: '/dashboard/color'
       },
       {
-        title: 'Vật Liệu',
+        title: 'Đế Giày',
+        path: '/dashboard/sole'
+      },
+      {
+        title: 'Chất Liệu',
         path: '/dashboard/material'
       },
       {

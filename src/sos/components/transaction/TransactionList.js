@@ -126,7 +126,7 @@ export default function TransactionList() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">ID</TableCell>
+                                    <TableCell align="center">STT</TableCell>
                                     <TableCell align="center">Mã Đơn Hàng</TableCell>
                                     <TableCell align="center">Số Tiền</TableCell>
                                     <TableCell align="center">Thời Gian</TableCell>
@@ -139,7 +139,7 @@ export default function TransactionList() {
 
                             <TableBody>
                                 {
-                                    data.content && data.content.map(transaction => (
+                                    data.content && data.content.map((transaction, index) => (
                                         <TableRow
                                             hover
                                             sx={{
@@ -153,7 +153,7 @@ export default function TransactionList() {
                                             onClick={() => { handleShowOrderDetail(transaction.orderId) }}>
                                             <TableCell align="center">
                                                 <Typography variant="body2">
-                                                    {transaction.id}
+                                                    {index + 1 + data.size * data.number}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">

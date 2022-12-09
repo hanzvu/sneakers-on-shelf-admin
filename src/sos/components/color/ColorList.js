@@ -20,7 +20,6 @@ import {
     Checkbox,
     Container,
 } from "@mui/material";
-import Favorite from '@mui/icons-material/Favorite';
 import SquareIcon from '@mui/icons-material/Square';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import IconButton from '@mui/material/IconButton';
@@ -82,7 +81,7 @@ export default function ColorList() {
                 <Grid container spacing={2} p={3} justifyContent={"space-between"}>
                     <Grid item xs={7}>
                         <Stack direction={"row"} spacing={1}>
-                            <TextField id="outlined-basic" label="Tìm Danh Mục" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
+                            <TextField id="outlined-basic" label="Tìm Kiếm" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
                             <Button variant="contained" color="primary" type="submit" onClick={handleSubmitQuery}>Tìm Kiếm</Button>
                             {
                                 searchParams.get('query') &&
@@ -121,11 +120,11 @@ export default function ColorList() {
                             </TableHead>
                             <TableBody>
                                 {
-                                    data.content && data.content.map(color => (
+                                    data.content && data.content.map((color, index) => (
                                         <TableRow hover key={color.id} tabIndex={-1}>
                                             <TableCell align="center" width={"10%"}>
                                                 <Typography variant="body1" flexWrap>
-                                                    {color.id}
+                                                    {index + 1 + data.size * data.number}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center" width={"25%"}>
@@ -189,7 +188,7 @@ export default function ColorList() {
                         renderItem={(item) => (
                             <PaginationItem
                                 component={Link}
-                                to={`/dashboard/material${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
+                                to={`/dashboard/color${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
                                 {...item}
                             />
                         )}

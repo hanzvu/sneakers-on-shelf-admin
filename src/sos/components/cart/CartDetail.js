@@ -140,7 +140,7 @@ export default function CartDetail() {
                 handleSubmitCart(
                     {
                         customerInfo,
-                        email: selectedAccount ? selectedAccount.email : null,
+                        email: selectedAccount ? selectedAccount.email : addressFormInput.email,
                         saleMethod: "DELIVERY",
                         voucher: selectedVoucher
                     }

@@ -15,6 +15,7 @@ import OrderTimelineDialog from "./OrderTimelineDialog";
 import ChangeOrderItemQuantity from "./ChangeOrderItemQuantity";
 import ConfirmDeleteOrderItemDialog from "./ConfirmDeleteOrderItemDialog";
 import ProductSeletor from "../cart/ProductSeletor";
+import ConfirmReverseOrderItem from "./ConfirmReverseOrderItem";
 
 export default function OrderDetail() {
 
@@ -70,9 +71,17 @@ export default function OrderDetail() {
         })
     }
 
-    const calculateTotal = (total, fee, discount, offer) => {
-        const rs = total + fee - discount - offer;
+    const calculateTotal = (total, fee, discount, offer, refund) => {
+        const rs = total + fee - discount - offer - refund;
         return rs > 0 ? rs : 0;
+    }
+
+    const handleReverse = (item) => {
+        if (data.discount > 0) {
+            showSnackbar('Trả hàng không áp dụng cho đơn hàng giảm giá.', 'warning')
+            return;
+        }
+        setData({ ...data, reverseOrderItem: item });
     }
 
     if (data == null) {
@@ -316,14 +325,19 @@ export default function OrderDetail() {
             <Paper elevation={3} square>
                 <Box p={{ xs: 1, md: 3 }}>
                     <Box>
-                        {data.items.map(item => (<OrderItem key={item.id} orderItem={item} component={
-                            data.orderStatus.name === 'PENDING' || data.orderStatus.name === 'CONFIRMED' ?
-                                <Stack direction={"row"} spacing={2}>
-                                    <Button variant="outlined" onClick={() => { setData({ ...data, changingProductQuantity: item }) }}>Cập Nhật</Button>
-                                    <Button variant="outlined" color="error" onClick={() => { setData({ ...data, deletingOrderItem: item }) }}>Hủy</Button>
-                                </Stack>
-                                : null
-                        } />))}
+                        {
+                            data.items.filter(item => (item.orderItemStatus.name === 'APPROVED')).map(item => (
+                                <OrderItem key={item.id} orderItem={item} component={
+                                    <OrderItemButton status={data.orderStatus.name} handleUpdate={() => { setData({ ...data, changingProductQuantity: item }) }} handleDelete={() => { setData({ ...data, deletingOrderItem: item }) }} handleReverse={() => { handleReverse(item) }} />}
+                                />))
+                        }
+                        {
+                            data.items.filter(item => (item.orderItemStatus.name === 'REVERSE')).map(item => (
+                                <OrderItem key={item.id} orderItem={item} component={
+                                    <Chip variant="outlined" label={item.orderItemStatus.description} color={item.orderItemStatus.color} />
+                                }
+                                />))
+                        }
                     </Box>
                     <Grid container spacing={1} pt={3} justifyContent={"space-between"}>
                         <Grid item md={4} xs={12}>
@@ -385,6 +399,21 @@ export default function OrderDetail() {
                                         </Grid>
                                     </Grid>
                                 }
+                                {
+                                    data.refund > 0 &&
+                                    <Grid item container >
+                                        <Grid item container xs={6}>
+                                            <Typography variant="body1">
+                                                Trả hàng
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={6} container justifyContent={"flex-end"}>
+                                            <Typography variant="body1">
+                                                {fCurrency(data.refund)}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                }
                                 <Grid item container >
                                     <Grid item container xs={6}>
                                         <Typography sx={{ fontWeight: 'bold' }} >
@@ -393,7 +422,7 @@ export default function OrderDetail() {
                                     </Grid>
                                     <Grid item xs={6} container justifyContent={"flex-end"}>
                                         <Typography sx={{ fontWeight: 'bold' }} color="crimson">
-                                            {fCurrency(calculateTotal(data.total, data.fee, data.discount, data.memberOffer))}
+                                            {fCurrency(calculateTotal(data.total, data.fee, data.discount, data.memberOffer, data.refund))}
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -424,5 +453,26 @@ export default function OrderDetail() {
             data.deletingOrderItem &&
             <ConfirmDeleteOrderItemDialog data={data} setData={setData} onDeleteOrderItemSuccess={fetchData} />
         }
+
+        {
+            data.reverseOrderItem &&
+            <ConfirmReverseOrderItem data={data} setData={setData} onReverseSuccess={fetchData} />
+        }
     </>)
+}
+
+const OrderItemButton = ({ status, handleUpdate, handleDelete, handleReverse }) => {
+    if (status === 'PENDING' || status === 'CONFIRMED') {
+        return <Stack direction={"row"} spacing={2}>
+            <Button variant="outlined" onClick={handleUpdate}>Cập Nhật</Button>
+            <Button variant="outlined" color="error" onClick={handleDelete}>Hủy</Button>
+        </Stack>;
+    }
+
+    if (status === 'APPROVED' || status === 'CONFIRMED') {
+        return <Stack direction={"row"} spacing={2}>
+            <Button variant="contained" color="error" onClick={handleReverse}>Trả Hàng</Button>
+        </Stack>;
+    }
+    return null;
 }

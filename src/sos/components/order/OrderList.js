@@ -81,22 +81,15 @@ export default function OrderList() {
             <Card>
                 <form onSubmit={handleSubmitQuery}>
                     <Grid container spacing={2} p={3} justifyContent={"space-between"}>
-                        <Grid item xs={7}>
-                            <Stack direction={"row"} spacing={1}>
-                                <TextField id="outlined-basic" label="Tìm Đơn Hàng" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
-                                <Button variant="contained" color="primary" type="submit">Tìm Kiếm</Button>
-                                <Button variant="contained" color="warning" type="button" onClick={handleRefresh}>Làm Mới</Button>
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={5} container justifyContent={"flex-end"}>
-                            <Box pr={3}>
-                                <Button variant="contained" onClick={handleCreateCart} startIcon={<Iconify icon="eva:plus-fill" />}>
-                                    Tạo đơn hàng
-                                </Button>
-                            </Box>
-                        </Grid>
-                        <Grid item container justifyContent={"space-between"}>
-                            <Grid item xs={4}>
+                        <Grid item container xs={9}>
+                            <Grid item xs={7}>
+                                <Stack direction={"row"} spacing={1}>
+                                    <TextField id="outlined-basic" label="Tìm Đơn Hàng" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
+                                    <Button variant="contained" color="primary" type="submit">Tìm Kiếm</Button>
+                                    <Button variant="contained" color="warning" type="button" onClick={handleRefresh}>Làm Mới</Button>
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={5}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <Stack spacing={3} direction="row">
                                         <DatePicker
@@ -129,6 +122,15 @@ export default function OrderList() {
                                     </Stack>
                                 </LocalizationProvider>
                             </Grid>
+                        </Grid>
+                        <Grid item xs={3} container justifyContent={"flex-end"}>
+                            <Box pr={3}>
+                                <Button variant="contained" onClick={handleCreateCart} startIcon={<Iconify icon="eva:plus-fill" />}>
+                                    Tạo đơn hàng
+                                </Button>
+                            </Box>
+                        </Grid>
+                        <Grid item container justifyContent={"center"}>
                             <Stack spacing={3} direction="row">
                                 <CollectionSorter value={searchParams.get('status')}
                                     title="Trạng thái"
@@ -152,6 +154,17 @@ export default function OrderList() {
                                     }}
                                     options={SALE_METHOD_OPTIONS}
                                 />
+                                <CollectionSorter value={searchParams.get('sort')}
+                                    title="Sắp xếp"
+                                    defaultValue="Mặc định"
+                                    handleChange={sort => {
+                                        setSearchParams({
+                                            ...Object.fromEntries(searchParams.entries()),
+                                            sort
+                                        })
+                                    }}
+                                    options={SORT_OPTIONS}
+                                />
                                 <CollectionSorter value={searchParams.get('size')}
                                     title="Hiển thị"
                                     defaultValue="10"
@@ -172,6 +185,7 @@ export default function OrderList() {
                         <Table>
                             <TableHead>
                                 <TableRow>
+                                    <TableCell align="center">STT</TableCell>
                                     <TableCell align="center">Mã Đơn Hàng</TableCell>
                                     <TableCell align="center" width={"9%"}>Tổng Số Sản Phẩm</TableCell>
                                     <TableCell align="center">Tổng Số Tiền</TableCell>
@@ -185,7 +199,7 @@ export default function OrderList() {
 
                             <TableBody>
                                 {
-                                    data.content && data.content.map(order => (
+                                    data.content && data.content.map((order, index) => (
                                         <TableRow
                                             hover
                                             sx={{
@@ -197,6 +211,11 @@ export default function OrderList() {
                                             tabIndex={-1}
                                             role="checkbox"
                                             onClick={() => { handleShowOrderDetail(order.id) }}>
+                                            <TableCell align="center">
+                                                <Typography variant="subtitle2">
+                                                    {index + 1 + data.size * data.number}
+                                                </Typography>
+                                            </TableCell>
                                             <TableCell align="center">
                                                 <Typography variant="subtitle2" color="grey">
                                                     {order.id}
@@ -268,6 +287,14 @@ export default function OrderList() {
             </Card>
         }
     </>)
+}
+
+const SORT_OPTIONS = {
+    '': { value: '', label: 'Mặc định' },
+    'total_desc': { value: 'total_desc', label: 'Giá trị giảm dần' },
+    'total_asc': { value: 'total_asc', label: 'Giá trị tăng dần' },
+    'date_desc': { value: 'date_desc', label: 'Mới nhất' },
+    'date_asc': { value: 'date_asc', label: 'Cũ nhất' },
 }
 
 const ORDER_STATUS_OPTIONS = {

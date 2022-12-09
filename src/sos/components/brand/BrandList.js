@@ -176,7 +176,7 @@ export default function BrandList() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">ID</TableCell>
+                                    <TableCell align="center">STT</TableCell>
                                     <TableCell align="center">Tên Nhãn Hiệu</TableCell>
                                     <TableCell align="center">Trạng Thái</TableCell>
                                     <TableCell align="center">Thao Tác</TableCell>
@@ -184,11 +184,11 @@ export default function BrandList() {
                             </TableHead>
                             <TableBody>
                                 {
-                                    data.content && data.content.map(brand => (
+                                    data.content && data.content.map((brand, index) => (
                                         <TableRow hover key={brand.id} tabIndex={-1}>
                                             <TableCell align="center" width={"10%"}>
                                                 <Typography variant="body1" flexWrap>
-                                                    {brand.id}
+                                                    {index + 1 + data.size * data.number}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center" width={"25%"}>

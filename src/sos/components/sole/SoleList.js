@@ -23,19 +23,19 @@ import Scrollbar from "../../../components/Scrollbar";
 import Iconify from "../../../components/Iconify";
 import { showSnackbar } from "../../services/NotificationService";
 import CollectionSorter from "../common/CollectionSorter";
-import { findMaterials, updateMaterialStatus } from "../../services/MaterialService";
-import AddMaterialDialog from "./AddMaterialDialog";
-import UpdateMaterialDialog from "./UpdateMaterialDialog";
+import { findSoles, updateSoleStatus } from "../../services/SoleService";
+import UpdateSoleDialog from "./UpdateSoleDialog";
+import AddSoleDialog from "./AddSoleDialog";
 
 // material
 
-export default function MaterialList() {
+export default function SoleList() {
 
     const [data, setData] = useState();
 
     const [query, setQuery] = useState('');
 
-    const [material, setMaterial] = useState(null);
+    const [sole, setSole] = useState(null);
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -44,7 +44,7 @@ export default function MaterialList() {
     }, [searchParams]);
 
     const fetchData = () => {
-        findMaterials(Object.fromEntries(searchParams.entries())).then(data => { setData(data) })
+        findSoles(Object.fromEntries(searchParams.entries())).then(data => { setData(data) })
     }
 
     const handleSubmitQuery = () => {
@@ -59,7 +59,7 @@ export default function MaterialList() {
     }
 
     const handleUpdateStatus = (id, status) => {
-        updateMaterialStatus(id, status).then(() => {
+        updateSoleStatus(id, status).then(() => {
             fetchData();
         })
     }
@@ -97,7 +97,7 @@ export default function MaterialList() {
                                 }}
                                 options={CATEGORY_STATUS_OPTIONS}
                             />
-                            <AddMaterialDialog onSuccess={fetchData} />
+                            <AddSoleDialog onSuccess={fetchData} />
                         </Stack>
                     </Grid>
                 </Grid>
@@ -107,15 +107,15 @@ export default function MaterialList() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center">STT</TableCell>
-                                    <TableCell align="center">Tên Chất Liệu</TableCell>
+                                    <TableCell align="center">Tên Đế Giày</TableCell>
                                     <TableCell align="center">Trạng Thái</TableCell>
                                     <TableCell align="center">Thao Tác</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {
-                                    data.content && data.content.map((material, index) => (
-                                        <TableRow hover key={material.id} tabIndex={-1}>
+                                    data.content && data.content.map((sole, index) => (
+                                        <TableRow hover key={sole.id} tabIndex={-1}>
                                             <TableCell align="center" width={"10%"}>
                                                 <Typography variant="body1" flexWrap>
                                                     {index + 1 + data.size * data.number}
@@ -123,29 +123,29 @@ export default function MaterialList() {
                                             </TableCell>
                                             <TableCell align="center" width={"25%"}>
                                                 <Typography variant="body1" flexWrap>
-                                                    {material.name}
+                                                    {sole.name}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center" width={"25%"}>
-                                                <Chip label={material.activeStatus.description} color={material.activeStatus.color} />
+                                                <Chip label={sole.activeStatus.description} color={sole.activeStatus.color} />
                                             </TableCell>
                                             <TableCell align="center" width={"15%"}>
                                                 <Stack direction="row" alignItems="center" justifyContent={"center"} spacing={2}>
                                                     <Tooltip title="Chỉnh sửa">
-                                                        <IconButton aria-label="edit" size="medium" color="primary" onClick={() => { setMaterial(material) }}>
+                                                        <IconButton aria-label="edit" size="medium" color="primary" onClick={() => { setSole(sole) }}>
                                                             <Iconify icon="eva:edit-2-fill" />
                                                         </IconButton>
                                                     </Tooltip>
                                                     {
-                                                        material.activeStatus.name === 'ACTIVE' ?
+                                                        sole.activeStatus.name === 'ACTIVE' ?
                                                             <Tooltip title="Hủy kích hoạt">
-                                                                <IconButton aria-label="inactive" size="medium" color="error" onClick={() => { handleUpdateStatus(material.id, 'INACTIVE') }}>
+                                                                <IconButton aria-label="inactive" size="medium" color="error" onClick={() => { handleUpdateStatus(sole.id, 'INACTIVE') }}>
                                                                     <Iconify icon="material-symbols:inactive-order-outline-rounded" />
                                                                 </IconButton>
                                                             </Tooltip>
                                                             :
                                                             <Tooltip title="Kích hoạt">
-                                                                <IconButton aria-label="active" size="medium" color="warning" onClick={() => { handleUpdateStatus(material.id, 'ACTIVE') }}>
+                                                                <IconButton aria-label="active" size="medium" color="warning" onClick={() => { handleUpdateStatus(sole.id, 'ACTIVE') }}>
                                                                     <Iconify icon="material-symbols:inactive-order-rounded" />
                                                                 </IconButton>
                                                             </Tooltip>
@@ -179,15 +179,15 @@ export default function MaterialList() {
                         renderItem={(item) => (
                             <PaginationItem
                                 component={Link}
-                                to={`/dashboard/material${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
+                                to={`/dashboard/sole${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
                                 {...item}
                             />
                         )}
                     />
                 </Stack>
                 {
-                    material &&
-                    <UpdateMaterialDialog material={material} setMaterial={setMaterial} onSuccess={fetchData} />
+                    sole &&
+                    <UpdateSoleDialog sole={sole} setSole={setSole} onSuccess={fetchData} />
                 }
             </Card>
         }

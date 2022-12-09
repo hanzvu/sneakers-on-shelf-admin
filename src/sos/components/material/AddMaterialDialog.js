@@ -55,7 +55,7 @@ export default function AddMaterialDialog({ onSuccess }) {
     return (
         <>
             <Button variant="contained" onClick={handleClickOpen} startIcon={<Iconify icon="eva:plus-fill" />}>
-                Thêm Vật Liệu
+                Thêm Chất Liệu
             </Button>
             <Dialog
                 maxWidth={"sm"}

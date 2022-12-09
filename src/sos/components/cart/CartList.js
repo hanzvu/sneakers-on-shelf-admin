@@ -111,7 +111,7 @@ export default function CartList() {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">ID</TableCell>
+                                    <TableCell align="center">STT</TableCell>
                                     <TableCell align="center">Số Sản Phẩm</TableCell>
                                     <TableCell align="center">Tổng Số Tiền</TableCell>
                                     <TableCell align="center">Ngày Tạo</TableCell>
@@ -122,7 +122,7 @@ export default function CartList() {
 
                             <TableBody>
                                 {
-                                    data.content && data.content.map(cart => (
+                                    data.content && data.content.map((cart, index) => (
                                         <TableRow
                                             hover
                                             key={cart.id}
@@ -130,7 +130,7 @@ export default function CartList() {
                                             role="checkbox">
                                             <TableCell align="center">
                                                 <Typography variant="body2">
-                                                    {cart.id}
+                                                    {index + 1 + data.size * data.number}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
