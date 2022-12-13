@@ -156,6 +156,17 @@ export default function ProductList() {
                                     }}
                                     options={PRODUCT_STATUS_OPTIONS}
                                 />
+                                <CollectionSorter value={searchParams.get('sort')}
+                                    title="Sắp xếp"
+                                    defaultValue="Mặc định"
+                                    handleChange={sort => {
+                                        setSearchParams({
+                                            ...Object.fromEntries(searchParams.entries()),
+                                            sort
+                                        })
+                                    }}
+                                    options={PRODUCT_SORTER_OPTIONS}
+                                />
                             </Stack>
                         </Grid>
                     </Grid>
@@ -269,4 +280,13 @@ const PRODUCT_GENDER_OPTIONS = {
     'MEN': { value: 'MEN', label: 'Nam' },
     'WOMAN': { value: 'WOMAN', label: 'Nữ' },
     'UNISEX': { value: 'UNISEX', label: 'Unisex' },
+}
+
+const PRODUCT_SORTER_OPTIONS = {
+    '': { value: '', label: 'Mặc định' },
+    'date_desc': { value: 'date_desc', label: 'Hàng mới nhất' },
+    'price_asc': { value: 'price_asc', label: 'Giá tăng dần' },
+    'price_desc': { value: 'price_desc', label: 'Giá giảm dần' },
+    'name_asc': { value: 'name_asc', label: 'A -> Z' },
+    'name_desc': { value: 'name_desc', label: 'Z -> A' },
 }

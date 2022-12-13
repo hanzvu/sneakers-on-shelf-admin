@@ -55,3 +55,8 @@ export const getMemberOfferPolicies = async () => {
     const response = await axios.get(`${BASE_API}/api/v1/member-offer-policies`);
     return response.data;
 }
+
+export const updateMemberOfferPolicy = async (id, data) => {
+    const response = await axios.put(`${BASE_API}/api/v1/member-offer-policies/${id}`, data);
+    return response.data;
+}

@@ -42,7 +42,7 @@ export default function CategoryList() {
     const [category, setCategory] = useState({
         id: '',
         name: '',
-        activeStatus: ''
+        activeStatus: null
     })
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -111,7 +111,7 @@ export default function CategoryList() {
             });
             if (category.id === '') showSnackbar("Thêm mới thành công", "success");
             else showSnackbar("Cập nhật thành công", "success");
-            setCategory(prevState => ({ ...prevState, id: '', name: '' }))
+            setCategory(prevState => ({ ...prevState, id: '', name: '', activeStatus: null }))
         }).catch(error => {
             if (error.response && error.response.status === 400) {
                 showSnackbar(error.response.data, "error");
@@ -266,8 +266,10 @@ export default function CategoryList() {
                         <TextField margin="normal" fullWidth id="outlined-basic" label="Nhập tên danh mục" variant="outlined" size="medium" value={category.name} onChange={e => { setCategory(prevState => ({ ...prevState, name: e.target.value })) }} />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Hủy</Button>
-                        <Button onClick={handleSaveCategoryOnClick} autoFocus>{title}</Button>
+                        <Stack spacing={2} p={2} direction="row" justifyContent="flex-end">
+                            <Button variant="contained" color="error" onClick={handleClose}>Hủy</Button>
+                            <Button variant="contained" onClick={handleSaveCategoryOnClick} autoFocus>{title}</Button>
+                        </Stack>
                     </DialogActions>
                 </Dialog>
             </Card>

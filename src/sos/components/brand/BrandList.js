@@ -42,7 +42,7 @@ export default function BrandList() {
     const [brand, setBrand] = useState({
         id: '',
         name: '',
-        activeStatus: ''
+        activeStatus: null
     })
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -115,7 +115,7 @@ export default function BrandList() {
             });
             if (brand.id === '') showSnackbar("Thêm mới thành công", "success");
             else showSnackbar("Cập nhật thành công", "success");
-            setBrand(prevState => ({ ...prevState, id: '', name: '' }))
+            setBrand(prevState => ({ ...prevState, id: '', name: '', activeStatus: null }))
         }).catch(error => {
             if (error.response && error.response.status === 400) {
                 showSnackbar(error.response.data, "error");
@@ -271,8 +271,10 @@ export default function BrandList() {
                         <TextField margin="normal" fullWidth id="outlined-basic" label="Nhập tên nhãn hiệu" variant="outlined" size="medium" value={brand.name} onChange={e => { setBrand(prevState => ({ ...prevState, name: e.target.value })) }} />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Hủy</Button>
-                        <Button onClick={handleSaveBrandOnClick} autoFocus>{title}</Button>
+                        <Stack direction="row" justifyContent="flex-end" spacing={2} p={2}>
+                            <Button variant="contained" color="error" onClick={handleClose}>Hủy</Button>
+                            <Button variant="contained" onClick={handleSaveBrandOnClick} autoFocus>{title}</Button>
+                        </Stack>
                     </DialogActions>
                 </Dialog>
             </Card>

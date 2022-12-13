@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Iconify from "../../../components/Iconify";
 import Scrollbar from "../../../components/Scrollbar";
 import { getMemberOfferPolicies } from "../../services/CartService";
+import UpdateMemberOfferPolicyDialog from "./UpdateMemberOfferPolicyDialog";
 
 export default function MemberOfferPolicyList() {
 
@@ -13,12 +14,12 @@ export default function MemberOfferPolicyList() {
     }, [])
 
     const fetchData = () => {
-        getMemberOfferPolicies().then(data => { setData(data) });
+        getMemberOfferPolicies().then(content => { setData({ content }) });
     }
 
     return (<>
         {
-            data &&
+            data && data.content &&
             <Card>
                 <Scrollbar>
                     <TableContainer sx={{ minWidth: 800 }}>
@@ -35,7 +36,7 @@ export default function MemberOfferPolicyList() {
 
                             <TableBody>
                                 {
-                                    data.length > 0 && data.map((mop, index) => (
+                                    data.content.length > 0 && data.content.map((mop, index) => (
                                         <TableRow hover key={mop.id} tabIndex={-1}>
                                             <TableCell align="center">
                                                 <Typography variant="body2" flexWrap>
@@ -57,7 +58,7 @@ export default function MemberOfferPolicyList() {
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Tooltip title="Chỉnh sửa">
-                                                    <IconButton aria-label="edit" size="medium" color="primary">
+                                                    <IconButton onClick={() => { setData({ ...data, updatingEntity: mop }) }} aria-label="edit" size="medium" color="primary">
                                                         <Iconify icon="eva:edit-2-fill" />
                                                     </IconButton>
                                                 </Tooltip>
@@ -67,7 +68,7 @@ export default function MemberOfferPolicyList() {
                                 }
 
                                 {
-                                    data.length === 0 &&
+                                    data.content.length === 0 &&
                                     <TableRow>
                                         <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                                             <Typography gutterBottom align="center" variant="subtitle1">
@@ -81,6 +82,10 @@ export default function MemberOfferPolicyList() {
                         </Table>
                     </TableContainer>
                 </Scrollbar>
+                {
+                    data.updatingEntity &&
+                    <UpdateMemberOfferPolicyDialog data={data} setData={setData} onSuccess={fetchData} />
+                }
             </Card>
         }
     </>)

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
@@ -7,7 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { Link, Stack, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { login } from '../../services/AuthenticationService';
+import { addAuthenticationInterceptor, login } from '../../services/AuthenticationService';
 import { showSnackbar } from '../../services/NotificationService';
 import { fetchAccount } from '../../services/AccountService';
 // components
@@ -17,6 +17,11 @@ import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hoo
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
+
+    useEffect(() => {
+        addAuthenticationInterceptor();
+    }, [])
+
     const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
@@ -78,17 +83,11 @@ export default function LoginForm() {
                     }}
                 />
             </Stack>
-
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-                <RHFCheckbox name="remember" label="Ghi nhớ đăng nhập" />
-                <Link variant="subtitle2" underline="hover">
-                    Quên mật khẩu ?
-                </Link>
+            <Stack direction="row" alignItems="center" justifyContent="center" py={3}>
+                <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+                    Đăng Nhập
+                </LoadingButton>
             </Stack>
-
-            <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-                Đăng Nhập
-            </LoadingButton>
         </FormProvider>
     );
 }
