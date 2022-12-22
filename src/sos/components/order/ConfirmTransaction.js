@@ -3,6 +3,7 @@ import { Box, Button, Chip, Dialog, DialogContent, FormControlLabel, Grid, Pagin
 import { showSnackbar } from "../../services/NotificationService";
 import { createTransaction } from "../../services/TransactionService";
 import { fCurrency, toVietnamese } from "../../../utils/formatNumber";
+import { capitalizeFirstLetter } from "../../utils/StringUtils";
 
 const Transition = forwardRef((props, ref) => {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -65,7 +66,7 @@ export default function ConfirmTransaction({ data, onCreateTransaction }) {
 
     const [reverse, setReverse] = useState(false);
 
-    const [amount, setAmount] = useState(data.total + data.fee - data.discount);
+    const [amount, setAmount] = useState(data.orderStatus.name === 'CANCELLED' ? Math.abs(data.transactions.paymentAmount - data.transactions.reverseAmount) : Math.abs(data.requiredAmount - data.transactions.paymentAmount + data.transactions.reverseAmount));
 
     const onSubmit = (paymentMethod) => {
         if (amount <= 0) {
@@ -127,7 +128,7 @@ export default function ConfirmTransaction({ data, onCreateTransaction }) {
                                 </Grid>
                                 <Grid item>
                                     <Typography variant="body1" color={"crimson"}>
-                                        {`${toVietnamese(Number(amount))} đồng`}
+                                        {`${capitalizeFirstLetter(toVietnamese(Number(amount)))} đồng`}
                                     </Typography>
                                 </Grid>
                             </Grid>

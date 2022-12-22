@@ -1,10 +1,13 @@
-import { useState, forwardRef } from "react";
+import { useState, useEffect, forwardRef } from "react";
 import { Button, Dialog, DialogContent, DialogTitle, Grid, Link, Pagination, PaginationItem, Slide, Stack, styled, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import Scrollbar from "../../../components/Scrollbar";
 import { showSnackbar } from "../../services/NotificationService";
 import { findProduct, findProducts } from "../../services/ProductService";
 import { fCurrency } from "../../../utils/formatNumber";
 import ProductDetailSeletor from "./ProductDetailSeletor";
+import CollectionSorter from "../common/CollectionSorter";
+import CollectionColorSorter from "../common/CollectionColorSorter";
+import { getAllBrand, getAllCategory, getAllColor, getAllMaterial, getAllSole } from "../../services/CollectionService";
 
 const Transition = forwardRef((props, ref) => {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -14,28 +17,36 @@ export default function ProductSeletor({ handleSelectProductDetail }) {
 
     const [open, setOpen] = useState(false);
 
-    const [product, setProduct] = useState(null)
+    const [product, setProduct] = useState(null);
 
     const [query, setQuery] = useState('');
 
+    const [params, setParams] = useState({});
+
     const [data, setData] = useState({ content: [] });
 
-    const handleSearchProduct = () => {
-        const params = query.trimStart().trimEnd().length > 0 ? { query } : {};
-        findProducts(params).then(data => {
+    const [sorter, setSorter] = useState();
+
+    useEffect(() => {
+        fetchSorter();
+    }, [])
+
+    useEffect(() => {
+        findProducts({ ...params, status: 'ACTIVE' }).then(data => {
             setData(data);
         }).catch(() => {
             showSnackbar("Có lỗi xảy ra, hãy thử lại sau.", "error");
         });
+    }, [params]);
+
+    const handleSearchProduct = () => {
+        if (query.trimStart().trimEnd().length > 0) {
+            setParams({ ...params, query });
+        }
     }
 
     const handleChangePage = (event, page) => {
-        const params = query.trimStart().trimEnd().length > 0 ? { query } : {};
-        findProducts({ ...params, page }).then(data => {
-            setData(data);
-        }).catch(() => {
-            showSnackbar("Có lỗi xảy ra, hãy thử lại sau.", "error");
-        });
+        setParams({ ...params, page })
     }
 
     const handleSelectProduct = id => {
@@ -49,6 +60,45 @@ export default function ProductSeletor({ handleSelectProductDetail }) {
         setOpen(false);
         setData({ content: [] })
         handleSelectProductDetail(data);
+    }
+
+    const fetchSorter = async () => {
+        const brands = await getAllBrand();
+        const categories = await getAllCategory();
+        const colors = await getAllColor();
+        const soles = await getAllSole();
+        const materials = await getAllMaterial();
+        setSorter({ ...sorter, brands: convertToSorterData(brands), categories: convertToSorterData(categories), soles: convertToSorterData(soles), materials: convertToSorterData(materials), colors: convertToColorSorterData(colors) })
+    }
+
+    const convertToSorterData = source => {
+        const rs = source.reduce((obj, row) => {
+            obj[row.id] = {
+                value: row.id,
+                label: row.name
+            };
+            return obj;
+        }, {});
+
+        return {
+            '': { value: '', label: 'Tất cả' },
+            ...rs
+        }
+    }
+
+    const convertToColorSorterData = source => {
+        const rs = source.reduce((obj, row) => {
+            obj[row.id] = {
+                value: row.id,
+                code: row.code
+            };
+            return obj;
+        }, {});
+
+        return {
+            '': { value: '', label: 'Tất cả' },
+            ...rs
+        }
     }
 
     const handleClickOpen = () => {
@@ -65,7 +115,7 @@ export default function ProductSeletor({ handleSelectProductDetail }) {
                 THÊM SẢN PHẨM
             </Button>
             <Dialog
-                maxWidth={"md"}
+                maxWidth={"lg"}
                 fullWidth
                 open={open}
                 TransitionComponent={Transition}
@@ -80,7 +130,81 @@ export default function ProductSeletor({ handleSelectProductDetail }) {
                             <TextField autoFocus fullWidth label="Tìm Kiếm" variant="outlined" size="small" value={query} onChange={e => { setQuery(e.target.value) }} />
                         </Grid>
                         <Grid item container xs={5}>
-                            <Button variant="contained" onClick={handleSearchProduct}>Tìm Kiếm</Button>
+                            <Stack direction="row" spacing={2}>
+                                <Button variant="contained" onClick={handleSearchProduct}>Tìm Kiếm</Button>
+                                <Button variant="contained" color="warning" onClick={() => { setParams({}) }}>Làm Mới</Button>
+                            </Stack>
+
+                        </Grid>
+                        <Grid item container justifyContent={"center"}>
+                            <Stack spacing={2} justifyContent={"center"} alignItems="center">
+                                <Stack direction={"row"} justifyContent={"center"} alignItems="center" spacing={2}>
+                                    {
+                                        sorter && <>
+                                            <CollectionSorter value={params.category}
+                                                title="Danh Mục"
+                                                defaultValue="Tất cả"
+                                                handleChange={category => {
+                                                    setParams({ ...params, category });
+                                                }}
+                                                options={sorter.categories}
+                                            />
+                                            <CollectionSorter value={params.brand}
+                                                title="Hãng"
+                                                defaultValue="Tất cả"
+                                                handleChange={brand => {
+                                                    setParams({ ...params, brand });
+                                                }}
+                                                options={sorter.brands}
+                                            />
+                                            <CollectionSorter value={params.material}
+                                                title="Chất Liệu"
+                                                defaultValue="Tất cả"
+                                                handleChange={material => {
+                                                    setParams({ ...params, material });
+                                                }}
+                                                options={sorter.materials}
+                                            />
+                                            <CollectionSorter value={null}
+                                                title="Đế Giày"
+                                                defaultValue="Tất cả"
+                                                handleChange={sole => {
+                                                    setParams({ ...params, sole });
+                                                }}
+                                                options={sorter.soles}
+                                            />
+                                            <CollectionColorSorter value={params.color}
+                                                title="Màu Sắc"
+                                                defaultValue="Tất cả"
+                                                handleChange={color => {
+                                                    setParams({ ...params, color });
+                                                }}
+                                                options={sorter.colors}
+                                            />
+                                        </>
+                                    }
+                                </Stack>
+                                <Stack direction={"row"} justifyContent={"flex-end"} spacing={2}>
+                                    <CollectionSorter value={params.gender}
+                                        title="Giới tính"
+                                        defaultValue="Tất cả"
+                                        handleChange={gender => {
+                                            setParams({ ...params, gender });
+                                        }}
+                                        options={PRODUCT_GENDER_OPTIONS}
+                                    />
+                                    <CollectionSorter value={params.sort}
+                                        title="Sắp xếp"
+                                        defaultValue="Mặc định"
+                                        handleChange={sort => {
+                                            setParams({ ...params, sort });
+                                        }}
+                                        options={PRODUCT_SORTER_OPTIONS}
+                                    />
+                                </Stack>
+
+                            </Stack>
+
                         </Grid>
                     </Grid>
 
@@ -140,4 +264,20 @@ export default function ProductSeletor({ handleSelectProductDetail }) {
             <ProductDetailSeletor product={product} setProduct={setProduct} handleSelectProductDetail={handleSelectedProductDetail} />
         </>
     )
+}
+
+const PRODUCT_GENDER_OPTIONS = {
+    '': { value: '', label: 'Tất cả' },
+    'MEN': { value: 'MEN', label: 'Nam' },
+    'WOMAN': { value: 'WOMAN', label: 'Nữ' },
+    'UNISEX': { value: 'UNISEX', label: 'Unisex' },
+}
+
+const PRODUCT_SORTER_OPTIONS = {
+    '': { value: '', label: 'Mặc định' },
+    'date_desc': { value: 'date_desc', label: 'Hàng mới nhất' },
+    'price_asc': { value: 'price_asc', label: 'Giá tăng dần' },
+    'price_desc': { value: 'price_desc', label: 'Giá giảm dần' },
+    'name_asc': { value: 'name_asc', label: 'A -> Z' },
+    'name_desc': { value: 'name_desc', label: 'Z -> A' },
 }

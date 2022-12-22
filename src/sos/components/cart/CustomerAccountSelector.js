@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, useEffect, forwardRef } from "react";
 import { Avatar, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Link, Slide, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import Scrollbar from "../../../components/Scrollbar";
 import { getAccountDTOById, getAccountDTOs } from "../../services/AccountService";
@@ -17,6 +17,10 @@ export default function CustomerAccountSelector({ setSelectedAccount, setSelecte
 
     const [data, setData] = useState({ content: [] });
 
+    useEffect(() => {
+        handleSearchAccount();
+    }, [])
+
     const handleSearchAccount = () => {
         const params = query.trimStart().trimEnd().length > 0 ? { query } : {};
         getAccountDTOs(params).then(data => {
@@ -31,7 +35,8 @@ export default function CustomerAccountSelector({ setSelectedAccount, setSelecte
             const data = await getAccountDTOById(id);
             const memberOfferPolicy = await getMemberOfferPolicyByAccountId(id);
             setSelectedAccount({ ...data, memberOfferPolicy });
-            setSelectedCustomerInfo(null);
+            console.log(data.customerInfos);
+            setSelectedCustomerInfo(data.customerInfos != null  ? Object.values(data.customerInfos)[0].id : null);
             handleClose();
         } catch {
             showSnackbar("Có lỗi xảy ra, hãy thử lại sau.", "error");

@@ -6,7 +6,7 @@ import * as Icons from "react-icons/fa";
 import OrderItem from "./OrderItem";
 import { showSnackbar } from "../../services/NotificationService";
 import { addOrderItem, getOrderById, updateOrderStatus } from "../../services/OrderService";
-import { fCurrency } from "../../../utils/formatNumber";
+import { fCurrency, toVietnamese } from "../../../utils/formatNumber";
 import OrderStatusDialog from "./OrderStatusDialog";
 import Scrollbar from "../../../components/Scrollbar";
 import ConfirmTransaction from "./ConfirmTransaction";
@@ -16,6 +16,7 @@ import ChangeOrderItemQuantity from "./ChangeOrderItemQuantity";
 import ConfirmDeleteOrderItemDialog from "./ConfirmDeleteOrderItemDialog";
 import ProductSeletor from "../cart/ProductSeletor";
 import ConfirmReverseOrderItem from "./ConfirmReverseOrderItem";
+import { capitalizeFirstLetter } from "../../utils/StringUtils";
 
 export default function OrderDetail() {
 
@@ -27,14 +28,22 @@ export default function OrderDetail() {
         if (params.id == null) {
             return;
         }
-        getOrderById(params.id).then(data => {
-            setData(data)
-        })
+        fetchData();
     }, [params])
 
     const fetchData = () => {
-        getOrderById(params.id).then(data => {
-            setData(data)
+        getOrderById(params.id).then(rs => {
+            setData({
+                ...rs,
+                transactions: {
+                    content: rs.transactions,
+                    paymentAmount: rs.transactions == null ? 0 : rs.transactions.filter(trans => trans.transactionStatus.name === 'APPROVED' && trans.transactionType.name === 'PAYMENT'
+                    ).reduce((total, item) => (total + item.amount), 0),
+                    reverseAmount: rs.transactions == null ? 0 : rs.transactions.filter(trans => trans.transactionStatus.name === 'APPROVED' && trans.transactionType.name === 'REVERSE'
+                    ).reduce((total, item) => (total + item.amount), 0)
+                },
+                requiredAmount: calculateTotal(rs.total, rs.fee, rs.discount, rs.memberOffer, rs.refund)
+            })
         })
     }
 
@@ -261,7 +270,7 @@ export default function OrderDetail() {
                         </Grid>
                     </Box>
                     {
-                        data.transactions.length > 0 &&
+                        data.transactions.content && data.transactions.content.length > 0 &&
                         <Scrollbar>
                             <TableContainer sx={{ minWidth: 800 }}>
                                 <Table>
@@ -272,13 +281,14 @@ export default function OrderDetail() {
                                             <TableCell align="center">Loại Giao Dịch</TableCell>
                                             <TableCell align="center">Phương Thức Thanh Toán</TableCell>
                                             <TableCell align="center">Trạng Thái</TableCell>
+                                            <TableCell align="center">Ghi Chú</TableCell>
                                             <TableCell align="center">Nhân Viên Xác Nhận</TableCell>
                                         </TableRow>
                                     </TableHead>
 
                                     <TableBody>
                                         {
-                                            data.transactions.map(transaction => (
+                                            data.transactions.content.map(transaction => (
                                                 <TableRow hover tabIndex={-1} key={transaction.id}>
                                                     <TableCell align="center">
                                                         <Typography variant="body2" flexWrap color={"crimson"}>
@@ -301,6 +311,11 @@ export default function OrderDetail() {
                                                     </TableCell>
                                                     <TableCell align="center">
                                                         <Typography variant="body2" flexWrap>
+                                                            {transaction.description}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <Typography variant="body2" flexWrap>
                                                             {transaction.staff}
                                                         </Typography>
                                                     </TableCell>
@@ -310,10 +325,41 @@ export default function OrderDetail() {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                            {
+                                (data.transactions.paymentAmount - data.transactions.reverseAmount > 0) &&
+                                <Box borderTop={1} borderColor={"grey.500"}>
+                                    <Grid container spacing={1} pt={3} justifyContent={"space-between"}>
+                                        <Grid item md={4} xs={12}>
+                                            {
+                                                data.transactions.paymentAmount - data.transactions.reverseAmount >= data.requiredAmount ?
+                                                    <Chip color="primary" label="Đã Thanh Toán Xong" />
+                                                    :
+                                                    <Chip color="warning" label="Chưa Thanh Toán Xong" />
+                                            }
+                                        </Grid>
+                                        <Grid item md={4} xs={12}>
+                                            <Stack spacing={1}>
+                                                <Grid item container >
+                                                    <Grid item container xs={6}>
+                                                        <Typography variant="body1">
+                                                            Đã Thanh Toán
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={6} container justifyContent={"flex-end"}>
+                                                        <Typography variant="body1" color="crimson">
+                                                            {fCurrency(data.transactions.paymentAmount - data.transactions.reverseAmount)}
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                            </Stack>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            }
                         </Scrollbar>
                     }
                     {
-                        data.transactions.length === 0 &&
+                        data.transactions.content.length === 0 &&
                         <Typography variant="body1" pt={2} color={"dimgrey"}>
                             Không Có Dữ Liệu
                         </Typography>
@@ -422,7 +468,7 @@ export default function OrderDetail() {
                                     </Grid>
                                     <Grid item xs={6} container justifyContent={"flex-end"}>
                                         <Typography sx={{ fontWeight: 'bold' }} color="crimson">
-                                            {fCurrency(calculateTotal(data.total, data.fee, data.discount, data.memberOffer, data.refund))}
+                                            {fCurrency(data.requiredAmount)}
                                         </Typography>
                                     </Grid>
                                 </Grid>

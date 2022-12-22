@@ -194,7 +194,6 @@ export default function ColorList() {
                         )}
                     />
                 </Stack>
-                <Checkbox icon={<SquareIcon style={{ fill: "#b72e2e" }} />} checkedIcon={<CheckBoxIcon style={{ fill: "#b72e2e" }} />} readOnly />
                 {
                     color &&
                     <UpdateColorDialog color={color} setColor={setColor} onSuccess={fetchData} />

@@ -43,11 +43,9 @@ export default function CartDetail() {
 
     useEffect(() => {
         getCartById(params.id).then(data => {
-            setCart(data);
+            setCart({ ...data, total: data.items == null ? 0 : data.items.reduce((total, item) => (total + item.price * item.quantity), 0) });
         })
     }, [])
-
-    const total = (items) => (items == null ? 0 : items.reduce((total, item) => (total + item.price * item.quantity), 0))
 
     const handleAddressSelectDone = (wardCode) => {
         getDeliveryInfo(cart.id, addressFormInput.district.DistrictID, wardCode).then(response => setDelivery(response))
@@ -80,17 +78,16 @@ export default function CartDetail() {
     }
 
     const handleSelectVoucher = data => {
-        const tl = total(cart.items);
         if (data.voucherType === "PERCENT") {
             if (data.amount <= 0 || data.amount > 100) {
                 showSnackbar("Có lỗi xảy ra, hãy thử lại sau")
                 return;
             }
-            const d = tl * data.amount / 100;
+            const d = Math.floor(cart.total * data.amount / 100);
             const rs = d >= data.maxValue ? data.maxValue : d;
-            setVoucher({ ...voucher, data, discount: rs >= tl ? tl : rs })
+            setVoucher({ ...voucher, data, discount: rs >= cart.total ? cart.total : rs })
         } else {
-            setVoucher({ ...voucher, data, discount: data.amount > total ? total : data.amount })
+            setVoucher({ ...voucher, data, discount: data.amount > cart.total ? cart.total : data.amount })
         }
     }
 
@@ -187,8 +184,8 @@ export default function CartDetail() {
     }
 
     const calculateTotal = (total, fee, discount, offer) => {
-        const rs = total + fee - discount - (offer > 0 ? total * offer / 100 : 0);
-        return rs > 0 ? rs : 0;
+        const rs = total + fee - discount - Math.floor(offer > 0 ? total * offer / 100 : 0);
+        return rs > 0 ? Math.floor(rs) : 0;
     }
 
     if (cart == null) {
@@ -231,13 +228,13 @@ export default function CartDetail() {
                                     ))
                                 }
                                 <Grid container py={2} justifyContent={"flex-end"}>
-                                    <Grid container lg={3}>
+                                    <Grid container item lg={3}>
                                         <Grid item xs={6}>
                                             Tổng số tiền :
                                         </Grid>
                                         <Grid item xs={6} pr={2}>
                                             <Typography variant="body1" color="crimson" textAlign={"end"}>
-                                                {fCurrency(total(cart.items))}
+                                                {fCurrency(cart.total)}
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -440,7 +437,7 @@ export default function CartDetail() {
                                     <Grid item container spacing={1}>
                                         <Stack direction={"row"} spacing={1} justifyContent={"center"}>
                                             <TextField variant="outlined" size="small" value={(voucher.data && voucher.data.code) || ''} inputProps={{ readOnly: true, }} label="Mã Giảm Giá" />
-                                            <VoucherSelector value={total(cart.items)} handleSelectVoucher={handleSelectVoucher} />
+                                            <VoucherSelector value={cart.total} handleSelectVoucher={handleSelectVoucher} />
                                         </Stack>
                                     </Grid>
                                     <Grid item container >
@@ -451,7 +448,7 @@ export default function CartDetail() {
                                         </Grid>
                                         <Grid item xs={6} container justifyContent={"flex-end"}>
                                             <Typography variant="body1">
-                                                {fCurrency(total(cart.items))}
+                                                {fCurrency(cart.total)}
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -496,7 +493,7 @@ export default function CartDetail() {
                                             </Grid>
                                             <Grid item xs={6} container justifyContent={"flex-end"}>
                                                 <Typography variant="body1">
-                                                    {fCurrency(total(cart.items) * selectedAccount.memberOfferPolicy.offer / 100)}
+                                                    {fCurrency(Math.floor(cart.total * selectedAccount.memberOfferPolicy.offer / 100))}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -510,7 +507,7 @@ export default function CartDetail() {
                                         </Grid>
                                         <Grid item xs={6} container justifyContent={"flex-end"}>
                                             <Typography sx={{ fontWeight: 'bold' }} color="error">
-                                                {fCurrency(calculateTotal(total(cart.items), (shipping ? delivery.fee : 0), (voucher ? voucher.discount : 0), (selectedAccount && selectedAccount.memberOfferPolicy ? selectedAccount.memberOfferPolicy.offer : 0)))}
+                                                {fCurrency(calculateTotal(cart.total, (shipping ? delivery.fee : 0), (voucher ? voucher.discount : 0), (selectedAccount && selectedAccount.memberOfferPolicy ? selectedAccount.memberOfferPolicy.offer : 0)))}
                                             </Typography>
                                         </Grid>
                                     </Grid>

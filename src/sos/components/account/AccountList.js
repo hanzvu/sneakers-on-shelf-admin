@@ -131,7 +131,7 @@ export default function AccountList() {
                                     <TableCell align="center">Ảnh</TableCell>
                                     <TableCell align="center">Tên Tài Khoản</TableCell>
                                     <TableCell align="center">Email</TableCell>
-                                    <TableCell align="center">Họ Và Tên</TableCell>
+                                    <TableCell align="center" width={"20%"}>Họ Và Tên</TableCell>
                                     <TableCell align="center" width={"13%"}>Ngày Tạo</TableCell>
                                     <TableCell align="center">Điểm</TableCell>
                                     <TableCell align="center" width={"13%"}>Hạng</TableCell>

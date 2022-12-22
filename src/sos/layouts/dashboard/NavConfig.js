@@ -68,16 +68,22 @@ const navConfig = [
         title: 'Chất Liệu',
         path: '/dashboard/material'
       },
+
+    ]
+  },
+  {
+    title: 'Khuyến Mại',
+    icon: getIcon('mdi:user-heart'),
+    children: [
       {
         title: 'Mã Giảm Giá',
         path: '/dashboard/vouchers',
       },
+      {
+        title: 'Ưu Đãi Thành Viên',
+        path: '/dashboard/member-offer',
+      },
     ]
-  },
-  {
-    title: 'Ưu Đãi Thành Viên',
-    path: '/dashboard/member-offer',
-    icon: getIcon('mdi:user-heart')
   }
 ];
 

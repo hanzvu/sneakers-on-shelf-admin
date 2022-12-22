@@ -69,7 +69,7 @@ export default function TransactionList() {
                                 <Button variant="contained" color="warning" type="button" onClick={handleRefresh}>Làm Mới</Button>
                             </Stack>
                         </Grid>
-                        <Grid item sx={12} container>
+                        <Grid item xs={12} container>
                             <Stack direction={"row"} justifyContent={"flex-end"} spacing={2}>
                                 <CollectionSorter value={searchParams.get('transaction-status')}
                                     title="Trạng thái"

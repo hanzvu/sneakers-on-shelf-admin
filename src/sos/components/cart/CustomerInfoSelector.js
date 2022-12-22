@@ -26,7 +26,7 @@ export default function CustomerInfoSelector({ customerInfos, setSelectedCustome
     return (
         <>
             <Button variant="outlined" onClick={handleClickOpen}>
-                Chọn Khách Hàng
+                Chọn Địa Chỉ
             </Button>
             <Dialog
                 maxWidth={"lg"}

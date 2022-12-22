@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { LoadingButton } from '@mui/lab';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Container, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Stack, Typography } from '@mui/material';
+import { Autocomplete, Box, Container, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from '@mui/material';
 import SquareIcon from '@mui/icons-material/Square';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { createProduct } from '../../services/ProductService';
@@ -161,36 +161,20 @@ export default function ProductDetailForm({ data, fetchData }) {
                                 <Container disableGutters>
                                     <Grid container spacing={2}>
                                         <Grid item md={4}>
-                                            <FormControl fullWidth>
-                                                <InputLabel>Thương Hiệu</InputLabel>
-                                                <Select
-                                                    value={input.brand ? input.brand.id : null}
-                                                    label="Thương Hiệu"
-                                                    onChange={event => { setInput({ ...input, brand: { id: event.target.value } }) }}
-                                                >
-                                                    {
-                                                        data.brands.map(brand => (
-                                                            <MenuItem key={brand.id} value={brand.id}>{brand.name}</MenuItem>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </FormControl>
+                                            <Autocomplete
+                                                options={data.brands}
+                                                getOptionLabel={option => option.name}
+                                                onChange={(event, newValue) => { setInput({ ...input, brand: newValue ? { id: newValue.id } : null }) }}
+                                                renderInput={(params) => <TextField {...params} label="Thương Hiệu" />}
+                                            />
                                         </Grid>
                                         <Grid item md={4}>
-                                            <FormControl fullWidth>
-                                                <InputLabel>Danh Mục</InputLabel>
-                                                <Select
-                                                    value={input.category ? input.category.id : null}
-                                                    label="Danh Mục"
-                                                    onChange={event => { setInput({ ...input, category: { id: event.target.value } }) }}
-                                                >
-                                                    {
-                                                        data.categories.map(category => (
-                                                            <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </FormControl>
+                                            <Autocomplete
+                                                options={data.categories}
+                                                getOptionLabel={option => option.name}
+                                                onChange={(event, newValue) => { setInput({ ...input, category: newValue ? { id: newValue.id } : null }) }}
+                                                renderInput={(params) => <TextField {...params} label="Danh Mục" />}
+                                            />
                                         </Grid>
                                         <Grid item md={4}>
                                             <FormControl fullWidth>
@@ -220,49 +204,27 @@ export default function ProductDetailForm({ data, fetchData }) {
                                                 >
                                                     {
                                                         data.colors.content.map(color => (
-                                                            <MenuItem key={color.id} value={color.id}><SquareIcon style={{ fill: color.code }} />
-                                                                {color.code}
-                                                            </MenuItem>
+                                                            <MenuItem key={color.id} value={color.id}><SquareIcon style={{ fill: color.code }} /></MenuItem>
                                                         ))
                                                     }
                                                 </Select>
                                             </FormControl>
                                         </Grid>
                                         <Grid item md={4}>
-                                            <FormControl fullWidth>
-                                                <InputLabel>Đế Giày</InputLabel>
-                                                <Select
-                                                    value={input.sole ? input.sole.id : null}
-                                                    label="Đế Giày"
-                                                    onChange={event => { setInput({ ...input, sole: { id: event.target.value } }) }}
-                                                >
-                                                    {
-                                                        data.soles.content.map(sole => (
-                                                            <MenuItem key={sole.id} value={sole.id}>
-                                                                {sole.name}
-                                                            </MenuItem>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </FormControl>
+                                            <Autocomplete
+                                                options={data.soles.content}
+                                                getOptionLabel={option => option.name}
+                                                onChange={(event, newValue) => { setInput({ ...input, sole: newValue ? { id: newValue.id } : null }) }}
+                                                renderInput={(params) => <TextField {...params} label="Đế Giày" />}
+                                            />
                                         </Grid>
                                         <Grid item md={4}>
-                                            <FormControl fullWidth>
-                                                <InputLabel>Chất Liệu</InputLabel>
-                                                <Select
-                                                    value={input.material ? input.material.id : null}
-                                                    label="Chất Liệu"
-                                                    onChange={event => { setInput({ ...input, material: { id: event.target.value } }) }}
-                                                >
-                                                    {
-                                                        data.materials.content.map(material => (
-                                                            <MenuItem key={material.id} value={material.id}>
-                                                                {material.name}
-                                                            </MenuItem>
-                                                        ))
-                                                    }
-                                                </Select>
-                                            </FormControl>
+                                            <Autocomplete
+                                                options={data.materials.content}
+                                                getOptionLabel={option => option.name}
+                                                onChange={(event, newValue) => { setInput({ ...input, material: newValue ? { id: newValue.id } : null }) }}
+                                                renderInput={(params) => <TextField {...params} label="Đế Giày" />}
+                                            />
                                         </Grid>
                                     </Grid>
                                 </Container>

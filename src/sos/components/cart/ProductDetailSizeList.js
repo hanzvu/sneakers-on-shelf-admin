@@ -14,7 +14,7 @@ export default function ProductDetailSizeList({ productDetails, handleSelectProd
     }
 
     const handleChangeQuantity = value => {
-        if (value <= selectedProduct.quantity && value >= 1) {
+        if (value <= selectedProduct.quantity && value >= 1 && Number.isInteger(Number(value))) {
             setQuantity(value)
         }
     }

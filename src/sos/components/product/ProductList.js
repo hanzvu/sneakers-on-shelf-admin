@@ -24,7 +24,8 @@ import Iconify from "../../../components/Iconify";
 import { fCurrency } from "../../../utils/formatNumber";
 import CollectionSorter from "../common/CollectionSorter";
 import { findProducts } from "../../services/ProductService";
-import { getAllBrand, getAllCategory } from "../../services/CollectionService";
+import { getAllBrand, getAllCategory, getAllColor, getAllMaterial, getAllSole } from "../../services/CollectionService";
+import CollectionColorSorter from "../common/CollectionColorSorter";
 
 export default function ProductList() {
 
@@ -39,7 +40,7 @@ export default function ProductList() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
-        fetchBrandsCategories();
+        fetchSorter();
     }, [])
 
     useEffect(() => {
@@ -51,10 +52,13 @@ export default function ProductList() {
         setData({ ...data, products });
     }
 
-    const fetchBrandsCategories = async () => {
+    const fetchSorter = async () => {
         const brands = await getAllBrand();
         const categories = await getAllCategory();
-        setSorter({ ...sorter, brands: convertToSorterData(brands), categories: convertToSorterData(categories) })
+        const colors = await getAllColor();
+        const soles = await getAllSole();
+        const materials = await getAllMaterial();
+        setSorter({ ...sorter, brands: convertToSorterData(brands), categories: convertToSorterData(categories), soles: convertToSorterData(soles), materials: convertToSorterData(materials), colors: convertToColorSorterData(colors) })
     }
 
     const handleSubmitQuery = (e) => {
@@ -74,6 +78,21 @@ export default function ProductList() {
             obj[row.id] = {
                 value: row.id,
                 label: row.name
+            };
+            return obj;
+        }, {});
+
+        return {
+            '': { value: '', label: 'Tất cả' },
+            ...rs
+        }
+    }
+
+    const convertToColorSorterData = source => {
+        const rs = source.reduce((obj, row) => {
+            obj[row.id] = {
+                value: row.id,
+                code: row.code
             };
             return obj;
         }, {});
@@ -106,68 +125,107 @@ export default function ProductList() {
                                 </Link>
                             </Stack>
                         </Grid>
-                        <Grid item container justifyContent={"flex-end"}>
-                            <Stack direction={"row"} justifyContent={"flex-end"} spacing={2}>
-                                {
-                                    sorter && <>
-                                        <CollectionSorter value={searchParams.get('category')}
-                                            title="Danh Mục"
-                                            defaultValue="Tất cả"
-                                            handleChange={category => {
-                                                setSearchParams({
-                                                    ...Object.fromEntries(searchParams.entries()),
-                                                    category
-                                                })
-                                            }}
-                                            options={sorter.categories}
-                                        />
-                                        <CollectionSorter value={searchParams.get('brand')}
-                                            title="Hãng"
-                                            defaultValue="Tất cả"
-                                            handleChange={brand => {
-                                                setSearchParams({
-                                                    ...Object.fromEntries(searchParams.entries()),
-                                                    brand
-                                                })
-                                            }}
-                                            options={sorter.brands}
-                                        />
-                                    </>
-                                }
-                                <CollectionSorter value={searchParams.get('gender')}
-                                    title="Giới tính"
-                                    defaultValue="Tất cả"
-                                    handleChange={gender => {
-                                        setSearchParams({
-                                            ...Object.fromEntries(searchParams.entries()),
-                                            gender
-                                        })
-                                    }}
-                                    options={PRODUCT_GENDER_OPTIONS}
-                                />
-                                <CollectionSorter value={searchParams.get('status')}
-                                    title="Trạng thái"
-                                    defaultValue="Tất cả"
-                                    handleChange={status => {
-                                        setSearchParams({
-                                            ...Object.fromEntries(searchParams.entries()),
-                                            status
-                                        })
-                                    }}
-                                    options={PRODUCT_STATUS_OPTIONS}
-                                />
-                                <CollectionSorter value={searchParams.get('sort')}
-                                    title="Sắp xếp"
-                                    defaultValue="Mặc định"
-                                    handleChange={sort => {
-                                        setSearchParams({
-                                            ...Object.fromEntries(searchParams.entries()),
-                                            sort
-                                        })
-                                    }}
-                                    options={PRODUCT_SORTER_OPTIONS}
-                                />
+                        <Grid item container justifyContent={"center"}>
+                            <Stack spacing={2} justifyContent={"center"} alignItems="center">
+                                <Stack direction={"row"} justifyContent={"center"} alignItems="center" spacing={2}>
+                                    {
+                                        sorter && <>
+                                            <CollectionSorter value={searchParams.get('category')}
+                                                title="Danh Mục"
+                                                defaultValue="Tất cả"
+                                                handleChange={category => {
+                                                    setSearchParams({
+                                                        ...Object.fromEntries(searchParams.entries()),
+                                                        category
+                                                    })
+                                                }}
+                                                options={sorter.categories}
+                                            />
+                                            <CollectionSorter value={searchParams.get('brand')}
+                                                title="Hãng"
+                                                defaultValue="Tất cả"
+                                                handleChange={brand => {
+                                                    setSearchParams({
+                                                        ...Object.fromEntries(searchParams.entries()),
+                                                        brand
+                                                    })
+                                                }}
+                                                options={sorter.brands}
+                                            />
+                                            <CollectionSorter value={searchParams.get('material')}
+                                                title="Chất Liệu"
+                                                defaultValue="Tất cả"
+                                                handleChange={material => {
+                                                    setSearchParams({
+                                                        ...Object.fromEntries(searchParams.entries()),
+                                                        material
+                                                    })
+                                                }}
+                                                options={sorter.materials}
+                                            />
+                                            <CollectionSorter value={searchParams.get('sole')}
+                                                title="Đế Giày"
+                                                defaultValue="Tất cả"
+                                                handleChange={sole => {
+                                                    setSearchParams({
+                                                        ...Object.fromEntries(searchParams.entries()),
+                                                        sole
+                                                    })
+                                                }}
+                                                options={sorter.soles}
+                                            />
+                                            <CollectionColorSorter value={searchParams.get('color')}
+                                                title="Màu Sắc"
+                                                defaultValue="Tất cả"
+                                                handleChange={color => {
+                                                    setSearchParams({
+                                                        ...Object.fromEntries(searchParams.entries()),
+                                                        color
+                                                    })
+                                                }}
+                                                options={sorter.colors}
+                                            />
+                                        </>
+                                    }
+                                </Stack>
+                                <Stack direction={"row"} justifyContent={"flex-end"} spacing={2}>
+                                    <CollectionSorter value={searchParams.get('gender')}
+                                        title="Giới tính"
+                                        defaultValue="Tất cả"
+                                        handleChange={gender => {
+                                            setSearchParams({
+                                                ...Object.fromEntries(searchParams.entries()),
+                                                gender
+                                            })
+                                        }}
+                                        options={PRODUCT_GENDER_OPTIONS}
+                                    />
+                                    <CollectionSorter value={searchParams.get('status')}
+                                        title="Trạng thái"
+                                        defaultValue="Tất cả"
+                                        handleChange={status => {
+                                            setSearchParams({
+                                                ...Object.fromEntries(searchParams.entries()),
+                                                status
+                                            })
+                                        }}
+                                        options={PRODUCT_STATUS_OPTIONS}
+                                    />
+                                    <CollectionSorter value={searchParams.get('sort')}
+                                        title="Sắp xếp"
+                                        defaultValue="Mặc định"
+                                        handleChange={sort => {
+                                            setSearchParams({
+                                                ...Object.fromEntries(searchParams.entries()),
+                                                sort
+                                            })
+                                        }}
+                                        options={PRODUCT_SORTER_OPTIONS}
+                                    />
+                                </Stack>
+
                             </Stack>
+
                         </Grid>
                     </Grid>
                 </form>
@@ -179,7 +237,7 @@ export default function ProductList() {
                                     <TableCell align="center">STT</TableCell>
                                     <TableCell align="center" width={"20%"}>Ảnh</TableCell>
                                     <TableCell align="center">Tên Sản Phẩm</TableCell>
-                                    <TableCell align="center">Giá</TableCell>
+                                    <TableCell align="center" width={"10%"}>Giá</TableCell>
                                     <TableCell align="center">Ngày Tạo</TableCell>
                                     <TableCell align="center">Giới Tính</TableCell>
                                     <TableCell align="center">Trạng Thái</TableCell>
