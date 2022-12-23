@@ -66,7 +66,7 @@ export default function AddMaterialDialog({ onSuccess }) {
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description">
                 <Typography variant='h4' color={"dimgray"} textAlign={"center"} py={2}>
-                    THÊM VẬT LIỆU
+                    THÊM CHẤT LIỆU
                 </Typography>
                 <DialogContent sx={{ zIndex: 'modal' }}>
                     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

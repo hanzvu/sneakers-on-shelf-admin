@@ -13,8 +13,6 @@ export default function ProductDetailSeletor({ product, setProduct, handleSelect
         return;
     }
 
-    console.log(product);
-
     return (
         <>
             <Dialog
@@ -77,7 +75,10 @@ export default function ProductDetailSeletor({ product, setProduct, handleSelect
                                 <h5 className="h4 text-danger m-0 fw-bold">{fCurrency(product.sellPrice)}</h5>
                             </div>
 
-                            <ProductDetailSizeList productDetails={product.productDetails} handleSelectProductDetail={handleSelectProductDetail} />
+                            {
+                                product.productDetails.length > 0 &&
+                                <ProductDetailSizeList productDetails={product.productDetails} handleSelectProductDetail={handleSelectProductDetail} />
+                            }
                         </Grid>
                     </Grid>
                 </DialogContent>

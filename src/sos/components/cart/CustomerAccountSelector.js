@@ -35,10 +35,9 @@ export default function CustomerAccountSelector({ setSelectedAccount, setSelecte
             const data = await getAccountDTOById(id);
             const memberOfferPolicy = await getMemberOfferPolicyByAccountId(id);
             setSelectedAccount({ ...data, memberOfferPolicy });
-            console.log(data.customerInfos);
-            setSelectedCustomerInfo(data.customerInfos != null  ? Object.values(data.customerInfos)[0].id : null);
+            setSelectedCustomerInfo(data.customerInfos && Object.keys(data.customerInfos).length !== 0 ? Object.values(data.customerInfos)[0].id : null);
             handleClose();
-        } catch {
+        } catch (error) {
             showSnackbar("Có lỗi xảy ra, hãy thử lại sau.", "error");
         };
     }

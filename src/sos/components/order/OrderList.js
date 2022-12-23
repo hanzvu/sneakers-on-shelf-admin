@@ -98,10 +98,14 @@ export default function OrderList() {
                                             maxDate={searchParams.get('to-date') ? new Date(searchParams.get('to-date')) : new Date()}
                                             value={searchParams.get('from-date') ? new Date(searchParams.get('from-date')) : null}
                                             onChange={(newValue) => {
-                                                setSearchParams({
-                                                    ...Object.fromEntries(searchParams.entries()),
-                                                    'from-date': new Date(newValue.$d.getTime() - (newValue.$d.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0]
-                                                })
+                                                try {
+                                                    setSearchParams({
+                                                        ...Object.fromEntries(searchParams.entries()),
+                                                        'from-date': new Date(newValue.$d.getTime() - (newValue.$d.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0]
+                                                    })
+                                                } catch (error) {
+                                                    console.log(error);
+                                                }
                                             }}
                                             renderInput={(params) => <TextField size="small" {...params} />}
                                         />
@@ -112,10 +116,14 @@ export default function OrderList() {
                                             minDate={searchParams.get('from-date') ? new Date(searchParams.get('from-date')) : null}
                                             value={searchParams.get('to-date') ? new Date(searchParams.get('to-date')) : null}
                                             onChange={(newValue) => {
-                                                setSearchParams({
-                                                    ...Object.fromEntries(searchParams.entries()),
-                                                    'to-date': new Date(newValue.$d.getTime() - (newValue.$d.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0]
-                                                })
+                                                try {
+                                                    setSearchParams({
+                                                        ...Object.fromEntries(searchParams.entries()),
+                                                        'to-date': new Date(newValue.$d.getTime() - (newValue.$d.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0]
+                                                    })
+                                                } catch (error) {
+                                                    console.log(error);
+                                                }
                                             }}
                                             renderInput={(params) => <TextField size="small" {...params} />}
                                         />
@@ -275,13 +283,9 @@ export default function OrderList() {
                     <Pagination
                         page={data.number + 1}
                         count={data.totalPages}
-                        renderItem={(item) => (
-                            <PaginationItem
-                                component={Link}
-                                to={`/dashboard/orders${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
-                                {...item}
-                            />
-                        )}
+                        onChange={(event, value) => {
+                            setSearchParams({ ...Object.fromEntries(searchParams.entries()), page: value });
+                        }}
                     />
                 </Stack>
             </Card>

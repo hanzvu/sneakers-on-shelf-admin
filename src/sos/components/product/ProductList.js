@@ -313,13 +313,9 @@ export default function ProductList() {
                     <Pagination
                         page={data.products.number + 1}
                         count={data.products.totalPages}
-                        renderItem={(item) => (
-                            <PaginationItem
-                                component={Link}
-                                to={`/dashboard/products${item.page === data.products.number + 1 ? '' : `?page=${item.page}`}`}
-                                {...item}
-                            />
-                        )}
+                        onChange={(event, value) => {
+                            setSearchParams({ ...Object.fromEntries(searchParams.entries()), page: value });
+                        }}
                     />
                 </Stack>
             </Card>

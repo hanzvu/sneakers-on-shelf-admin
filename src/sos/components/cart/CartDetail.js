@@ -42,9 +42,7 @@ export default function CartDetail() {
     })
 
     useEffect(() => {
-        getCartById(params.id).then(data => {
-            setCart({ ...data, total: data.items == null ? 0 : data.items.reduce((total, item) => (total + item.price * item.quantity), 0) });
-        })
+        fetchCart();
     }, [])
 
     const handleAddressSelectDone = (wardCode) => {
@@ -67,7 +65,7 @@ export default function CartDetail() {
 
     const fetchCart = () => {
         getCartById(params.id).then(data => {
-            setCart(data);
+            setCart({ ...data, total: data.items == null ? 0 : data.items.reduce((total, item) => (total + item.price * item.quantity), 0) });
             setVoucher({ discount: 0 });
             if (selectedCustomerInfo) {
                 fetchDeliveryInfoByCustomerInfo(selectedCustomerInfo);
@@ -418,6 +416,14 @@ export default function CartDetail() {
                                                         component="span"
                                                         variant="h6" textAlign={"end"}>
                                                         Thời gian nhận hàng dự kiến : {new Date(delivery.leadtime * 1000).toLocaleDateString()}
+                                                    </Typography>
+                                                </Box>
+                                                <Box className="d-flex align-items-center pb-3">
+                                                    <ListItemIconStyle><Iconify icon={"carbon:delivery"} width={30} height={30} /></ListItemIconStyle>
+                                                    <Typography
+                                                        component="span"
+                                                        variant="h6" textAlign={"end"}>
+                                                        Đơn vị vận chuyển : <a href="https://ghn.vn/" className="text-decoration-none text-primary">Giao Hàng Nhanh</a>
                                                     </Typography>
                                                 </Box>
                                             </Grid>

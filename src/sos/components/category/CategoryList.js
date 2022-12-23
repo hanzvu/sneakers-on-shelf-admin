@@ -240,13 +240,9 @@ export default function CategoryList() {
                     <Pagination
                         page={data.number + 1}
                         count={data.totalPages}
-                        renderItem={(item) => (
-                            <PaginationItem
-                                component={Link}
-                                to={`/dashboard/category${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
-                                {...item}
-                            />
-                        )}
+                        onChange={(event, value) => {
+                            setSearchParams({ ...Object.fromEntries(searchParams.entries()), page: value });
+                        }}
                     />
                 </Stack>
 

@@ -223,7 +223,7 @@ export default function ProductDetailForm({ data, fetchData }) {
                                                 options={data.materials.content}
                                                 getOptionLabel={option => option.name}
                                                 onChange={(event, newValue) => { setInput({ ...input, material: newValue ? { id: newValue.id } : null }) }}
-                                                renderInput={(params) => <TextField {...params} label="Đế Giày" />}
+                                                renderInput={(params) => <TextField {...params} label="Chất Liệu" />}
                                             />
                                         </Grid>
                                     </Grid>

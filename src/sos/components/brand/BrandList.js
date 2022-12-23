@@ -245,13 +245,9 @@ export default function BrandList() {
                     <Pagination
                         page={data.number + 1}
                         count={data.totalPages}
-                        renderItem={(item) => (
-                            <PaginationItem
-                                component={Link}
-                                to={`/dashboard/brand${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
-                                {...item}
-                            />
-                        )}
+                        onChange={(event, value) => {
+                            setSearchParams({ ...Object.fromEntries(searchParams.entries()), page: value });
+                        }}
                     />
                 </Stack>
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useNavigate } from "react-router-dom";
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
-import { Box, Button, CardActionArea, CardActions, Container, FormControl, Grid, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, TextField } from '@mui/material';
+import { Box, Button, CardActionArea, CardActions, Container, FormControl, Grid, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, Stack, TextField } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -30,16 +30,20 @@ export default function CreateVoucher() {
     })
 
     const handleChange = e => {
+        if (e.target.value < 0 || !Number.isInteger(Number(e.target.value))) {
+            return;
+        }
+
         const { name, value } = e.target;
         if (name === 'amount') {
-            if( e.target.value > 100){
-            setInputAdornment('VND');
-            setInputMaxValue(true)
-            setVoucherFormInput(prevState => ({
-                ...prevState,
-                maxValue: '',
-                voucherType: 'DISCOUNT'
-            }));
+            if (e.target.value > 100) {
+                setInputAdornment('VND');
+                setInputMaxValue(true)
+                setVoucherFormInput(prevState => ({
+                    ...prevState,
+                    maxValue: '',
+                    voucherType: 'DISCOUNT'
+                }));
             } else {
                 setInputAdornment('%');
                 setInputMaxValue(false)
@@ -48,7 +52,7 @@ export default function CreateVoucher() {
                     voucherType: 'PERCENT'
                 }));
             }
-        } 
+        }
         setVoucherFormInput(prevState => ({
             ...prevState,
             [name]: value
@@ -80,8 +84,8 @@ export default function CreateVoucher() {
         if (voucherFormInput.quantity === '') {
             showSnackbar("Bạn chưa nhập số lượng sử dụng cho voucher", "warning")
             return;
-        } 
-        if(voucherFormInput.startDate > voucherFormInput.experationDate){
+        }
+        if (voucherFormInput.startDate > voucherFormInput.experationDate) {
             showSnackbar("Ngày kết thúc phải sau ngày bắt đầu", "error")
             return;
         }
@@ -102,7 +106,7 @@ export default function CreateVoucher() {
             }
         })
     }
-    
+
     const handleBackOnClick = e => {
         navigate(`/dashboard/vouchers`);
     }
@@ -110,130 +114,121 @@ export default function CreateVoucher() {
     return (
         <>
             <Card sx={{ maxWidth: 900 }}>
-            <Container>
-                <Typography gutterBottom variant="h5" component="div" marginTop={2}>
-                    Voucher
-                </Typography>
+                <Container>
+                    <Typography gutterBottom variant="h5" component="div" marginTop={2}>
+                        Voucher
+                    </Typography>
 
-                <Box component="form" autoComplete="off">
-                    <Grid container spacing={2} paddingTop={1} justifyContent={"space-between"}>
-                        <Grid item xs={6}>
-                            <TextField id="outlined-basic" name="code" value={voucherFormInput.code} onChange={handleChange} label="Mã giảm giá" placeholder="Nhập mã giảm giá…" variant="outlined" fullWidth />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                label="Giá trị"
-                                id="outlined-start-adornment"
-                                fullWidth
-                                name="amount"
-                                value={voucherFormInput.amount}
-                                onChange={handleChange}
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start">{inputAdornment}</InputAdornment>,
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                label="Giá trị tối đa (áp dụng với voucher %)"
-                                id="outlined-start-adornment"
-                                fullWidth
-                                name="maxValue"
-                                value={voucherFormInput.maxValue}
-                                onChange={handleChange}
-                                disabled={inputMaxValue}
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start">VND</InputAdornment>,
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                label="Điều kiện sử dụng voucher"
-                                id="outlined-start-adornment"
-                                fullWidth
-                                name="requiredValue"
-                                value={voucherFormInput.requiredValue}
-                                onChange={handleChange}
-                                InputProps={{
-                                    startAdornment: <InputAdornment position="start">Áp dụng với đơn hàng từ:</InputAdornment>,
-                                    endAdornment: <InputAdornment position="end">VND</InputAdornment>,
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    inputFormat='dd/MM/yyyy'
-                                    minDate={new Date}
-                                    label="Ngày bắt đầu"
-                                    value={dateStart}
-                                    onChange={(newValue) => {
-                                        setDateStart(newValue);
-                                        setVoucherFormInput(prevState => ({
-                                            ...prevState,
-                                            startDate: newValue
-                                        }));
-                                    }}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    inputFormat='dd/MM/yyyy'
-                                    minDate={dateStart}
-                                    label="Ngày kết thúc"
-                                    value={dateEnd}
-                                    onChange={(newValue) => {
-                                        setDateEnd(newValue);
-                                        setVoucherFormInput(prevState => ({
-                                            ...prevState,
-                                            experationDate: newValue
-                                        }));
-                                    }}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TextField id="outlined-basic" label="Lượt áp dụng" name="quantity" value={voucherFormInput.quantity} onChange={handleChange} placeholder="Số lượng sử dụng..." variant="outlined" fullWidth />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Quyền sử dụng</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={voucherFormInput.voucherAccess}
-                                    label="Quyền sử dụng"
-                                    name="voucherAccess"
+                    <Box component="form" autoComplete="off">
+                        <Grid container spacing={2} paddingTop={1} justifyContent={"space-between"}>
+                            <Grid item xs={6}>
+                                <TextField id="outlined-basic" name="code" value={voucherFormInput.code} onChange={e => { setVoucherFormInput({ ...voucherFormInput, code: e.target.value }) }} label="Mã giảm giá" placeholder="Nhập mã giảm giá…" variant="outlined" fullWidth />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Giá trị"
+                                    id="outlined-start-adornment"
+                                    fullWidth
+                                    name="amount"
+                                    value={voucherFormInput.amount}
                                     onChange={handleChange}
-                                >
-                                    <MenuItem value='PUBLIC'>Công khai với tất cả mọi người</MenuItem>
-                                    <MenuItem value='PROTECTED'>Chỉ một số người mới có quyền sử dụng</MenuItem>
-                                </Select>
-                            </FormControl>
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start">{inputAdornment}</InputAdornment>,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Giá trị tối đa (áp dụng với voucher %)"
+                                    id="outlined-start-adornment"
+                                    fullWidth
+                                    name="maxValue"
+                                    value={voucherFormInput.maxValue}
+                                    onChange={handleChange}
+                                    disabled={inputMaxValue}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start">VND</InputAdornment>,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Điều kiện sử dụng voucher"
+                                    id="outlined-start-adornment"
+                                    fullWidth
+                                    name="requiredValue"
+                                    value={voucherFormInput.requiredValue}
+                                    onChange={handleChange}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start">Áp dụng với đơn hàng từ:</InputAdornment>,
+                                        endAdornment: <InputAdornment position="end">VND</InputAdornment>,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        inputFormat='dd/MM/yyyy'
+                                        minDate={new Date}
+                                        label="Ngày bắt đầu"
+                                        value={dateStart}
+                                        onChange={(newValue) => {
+                                            setDateStart(newValue);
+                                            setVoucherFormInput(prevState => ({
+                                                ...prevState,
+                                                startDate: newValue
+                                            }));
+                                        }}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        inputFormat='dd/MM/yyyy'
+                                        minDate={dateStart}
+                                        label="Ngày kết thúc"
+                                        value={dateEnd}
+                                        onChange={(newValue) => {
+                                            setDateEnd(newValue);
+                                            setVoucherFormInput(prevState => ({
+                                                ...prevState,
+                                                experationDate: newValue
+                                            }));
+                                        }}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField id="outlined-basic" label="Lượt áp dụng" name="quantity" value={voucherFormInput.quantity} onChange={handleChange} placeholder="Số lượng sử dụng..." variant="outlined" fullWidth />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label">Quyền sử dụng</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={voucherFormInput.voucherAccess}
+                                        label="Quyền sử dụng"
+                                        name="voucherAccess"
+                                        onChange={handleChange}
+                                    >
+                                        <MenuItem value='PUBLIC'>Công khai với tất cả mọi người</MenuItem>
+                                        <MenuItem value='PROTECTED'>Chỉ một số người mới có quyền sử dụng</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
                         </Grid>
-                        <Grid alignSelf={'flex-end'}>
-                            <Button size="small" color="primary" onClick={handleSubmitVoucherOnClick}>
+                        <Stack direction={"row"} py={2} justifyContent="flex-end">
+                            <Button size='large' variant='contained' color="primary" onClick={handleSubmitVoucherOnClick}>
                                 Tạo mới
                             </Button>
-                        </Grid>
-
-                    </Grid>
-
-                </Box>
-
-
-            </Container>
-            <CardActions>
-                <Button size="small" color="primary" onClick={handleBackOnClick}>
-                    Trở lại
-                </Button>
-            </CardActions>
-        </Card>
+                        </Stack>
+                    </Box>
+                </Container>
+            </Card>
         </>
     );
 }

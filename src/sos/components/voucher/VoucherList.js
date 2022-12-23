@@ -251,13 +251,9 @@ export default function VoucherList() {
                     <Pagination
                         page={data.number + 1}
                         count={data.totalPages}
-                        renderItem={(item) => (
-                            <PaginationItem
-                                component={Link}
-                                to={`/dashboard/vouchers${item.page === data.number + 1 ? '' : `?page=${item.page}`}`}
-                                {...item}
-                            />
-                        )}
+                        onChange={(event, value) => {
+                            setSearchParams({ ...Object.fromEntries(searchParams.entries()), page: value });
+                        }}
                     />
                 </Stack>
             </Card>
